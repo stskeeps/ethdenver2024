@@ -2,6 +2,7 @@ package main
 import (
         "fmt"
 	"github.com/ethereum/go-ethereum/common"
+	hexutil "github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum-optimism/optimism/op-program/client/mpt"
 	"io/ioutil"
 	"log"
@@ -55,9 +56,9 @@ func main() {
     fmt.Printf("Receipts: %v\n", len(results))
     
     for count, element := range results {
-        fmt.Printf("receipt %i - %s\n", count, element.String())
         var tx types.Receipt
         var by []byte = element[1:]
+        fmt.Printf("receipt %i - %s\n", count, hexutil.Encode(by))
         err := rlp.DecodeBytes(by, &tx)
         if err != nil {
              fmt.Printf("Failed to decode\n");
@@ -70,5 +71,15 @@ func main() {
             fmt.Printf("log topic %s\n", topic.Hex())
           }
         }
+    }
+    hint("l1-transactions 0x6e4dd5b03a4fa7b85be4d6bd78bf641cf2fd1de92c8eb9b673c14edd349258d5");  
+    results = mpt.ReadTrie(common.HexToHash(header.TxHash.Hex()), func(key common.Hash) []byte {
+        return dehash(key.Hex()[2:])
+    })
+    fmt.Printf("Transactions: %v\n", len(results))
+    
+    for count, element := range results {
+        var by []byte = element[1:]
+        fmt.Printf("tx %i - %s\n", count, hexutil.Encode(by))
     }
 }

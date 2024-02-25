@@ -6,6 +6,7 @@ import (
 	"bytes"
 	"github.com/ethereum-optimism/optimism/op-program/client/mpt"
 	"io/ioutil"
+	"time"
 	"log"
         "net/http"      
         "github.com/ethereum/go-ethereum/core/types"
@@ -25,8 +26,42 @@ func dehash(x string) []byte {
     return data
 }
 
+func get_tx() []byte {
+    response, err := http.Get("http://127.0.0.1:5004/get_tx")
+    if err != nil {
+        fmt.Printf("The HTTP request failed with error %s\n", err)
+        return nil
+    }
+    defer response.Body.Close()
+
+    data, _ := ioutil.ReadAll(response.Body)
+    
+    return data
+}
+
 func hint(x string) {
     url := "http://127.0.0.1:5004/hint"
+    contentType := "application/octet-stream"
+    body := bytes.NewReader([]byte(x)) // Convert string to *bytes.Reader
+
+    response, err := http.Post(url, contentType, body)
+    if err != nil {
+        fmt.Printf("The HTTP request failed with error %s\n", err)
+        return
+    }
+    defer response.Body.Close()
+
+    // Read and print the response body (optional)
+    responseBody, err := ioutil.ReadAll(response.Body)
+    if err != nil {
+        fmt.Printf("Failed to read response body: %s\n", err)
+        return
+    }
+    fmt.Println("Response:", string(responseBody))
+}
+
+func finish(x string) {
+    url := "http://127.0.0.1:5004/finish"
     contentType := "application/octet-stream"
     body := bytes.NewReader([]byte(x)) // Convert string to *bytes.Reader
 
@@ -94,4 +129,8 @@ func main() {
         var by []byte = element[1:]
         fmt.Printf("tx %i - %s\n", count, hexutil.Encode(by))
     }
+    fmt.Printf("Done analyzing")
+    time.Sleep(8 * time.Second) 
+    get_tx()
+    finish("")    
 }

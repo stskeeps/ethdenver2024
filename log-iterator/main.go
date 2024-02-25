@@ -3,6 +3,7 @@ import (
         "fmt"
 	"github.com/ethereum/go-ethereum/common"
 	hexutil "github.com/ethereum/go-ethereum/common/hexutil"
+	"bytes"
 	"github.com/ethereum-optimism/optimism/op-program/client/mpt"
 	"io/ioutil"
 	"log"
@@ -12,7 +13,7 @@ import (
 )
 
 func dehash(x string) []byte {
-    response, err := http.Get("http://127.0.0.1:8000/dehash/" + x)
+    response, err := http.Get("http://127.0.0.1:5004/get_data/keccak256/" + x)
     if err != nil {
         fmt.Printf("The HTTP request failed with error %s\n", err)
         return nil
@@ -24,15 +25,26 @@ func dehash(x string) []byte {
     return data
 }
 
-func hint(x string){
-    response, err := http.Get("http://127.0.0.1:8000/hint/" + x)
+func hint(x string) {
+    url := "http://127.0.0.1:5004/hint"
+    contentType := "application/octet-stream"
+    body := bytes.NewReader([]byte(x)) // Convert string to *bytes.Reader
+
+    response, err := http.Post(url, contentType, body)
     if err != nil {
         fmt.Printf("The HTTP request failed with error %s\n", err)
         return
     }
     defer response.Body.Close()
-}
 
+    // Read and print the response body (optional)
+    responseBody, err := ioutil.ReadAll(response.Body)
+    if err != nil {
+        fmt.Printf("Failed to read response body: %s\n", err)
+        return
+    }
+    fmt.Println("Response:", string(responseBody))
+}
 
 func main() {
     hint("l1-block-header 0x6e4dd5b03a4fa7b85be4d6bd78bf641cf2fd1de92c8eb9b673c14edd349258d5")

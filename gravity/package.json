@@ -3,11 +3,12 @@
   "version": "0.1.0",
   "description": "TypeScript DApp",
   "dependencies": {
-    "@graphprotocol/graph-ts": "^0.33.0",
+    "better-sqlite3": "^9.4.3",
     "openapi-fetch": "^0.7",
     "viem": "^1"
   },
   "devDependencies": {
+    "@types/better-sqlite3": "^7.6.9",
     "@types/node": "^20",
     "esbuild": "^0.19",
     "npm-run-all": "^4",

@@ -14,7 +14,7 @@ const dehashEvents: any = async (data: any) => {
         id: new BigInt(10n),
         owner: "0xF05D57a5BeD2d1B529C56001FC5810cc9afC0335",
         displayName: "George",
-        imageURl: "https://no.where"
+        imageUrl: "https://no.where"
       }
     },
     {
@@ -23,7 +23,7 @@ const dehashEvents: any = async (data: any) => {
         id: new BigInt(10n),
         owner: "0xF05D57a5BeD2d1B529C56001FC5810cc9afC0335",
         displayName: "George Clown",
-        imageURl: "https://some.where.else"
+        imageUrl: "https://some.where.else"
       }
     }
   ]

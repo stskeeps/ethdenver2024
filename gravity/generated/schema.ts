@@ -2,50 +2,48 @@ import { Address } from "./graph-ts/types";
 import * as store from "./graph-ts/store"
 
 export class Gravatar {
-  attrs:any = {};
+  data:any = {};
 
-  constructor(id: `0x${string}`) {
-    this.attrs.id = id;
+  constructor(private id: `0x${string}`) {
   }
 
   save(): void {
-    store.set("Gravatar", this.id, this);
+    store.set("Gravatar", this.id, this.data);
   }
 
-  static load(id: string): Gravatar | null {
-    return store.get("Gravatar", id);
-  }
-
-  get id(): string {
-    return this.attrs.id;
-  }
-
-  set id(value: string) {
-    this.attrs.id = value;
+  static load(id: `0x${string}`): Gravatar | null {
+    const loaded = store.get("Gravatar", id);
+    if (loaded && loaded.data) {
+      const result = new Gravatar(id);
+      result.data = JSON.parse(loaded.data);
+      return result;
+    } else {
+      return null;
+    }
   }
 
   get owner(): Address {
-    return this.attrs.owner;
+    return this.data.owner;
   }
 
   set owner(owner: Address) {
-    this.attrs.owner = owner;
+    this.data.owner = owner;
   }
 
   get displayName(): string {
-    return this.attrs.displayName;
+    return this.data.displayName;
   }
 
   set displayName(displayName: string) {
-    this.attrs.displayName = displayName;
+    this.data.displayName = displayName;
   }
 
   get imageUrl(): string {
-    return this.attrs.imageUrl;
+    return this.data.imageUrl;
   }
 
   set imageUrl(imageUrl: string) {
-    this.attrs.imageUrl = imageUrl;
+    this.data.imageUrl = imageUrl;
   }
 }
 

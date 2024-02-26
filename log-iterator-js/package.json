@@ -1,0 +1,27 @@
+{
+    "name": "log-iterator-js",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "keywords": [],
+    "author": "Danilo Tuler",
+    "license": "ISC",
+    "dependencies": {
+        "@ethereumjs/block": "^5.1.1",
+        "@ethereumjs/common": "^4.2.0",
+        "@ethereumjs/evm": "^2.2.1",
+        "@ethereumjs/rlp": "^5.0.2",
+        "@ethereumjs/trie": "^6.1.1",
+        "@ethereumjs/util": "^9.0.2",
+        "@ethereumjs/vm": "^7.2.1",
+        "viem": "^2.7.14"
+    },
+    "type": "module",
+    "devDependencies": {
+        "@types/node": "^20.11.20",
+        "typescript": "^5.3.3"
+    }
+}

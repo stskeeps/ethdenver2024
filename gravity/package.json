@@ -18,8 +18,9 @@
     "vitest": "^0.34"
   },
   "scripts": {
-    "build": "run-s compile",
+    "build": "run-s codegen compile",
     "compile": "tsc && esbuild ./src/index.ts --bundle --outfile=dist/index.js --platform=node --target=node20",
+    "codegen": "wagmi generate",
     "test": "vitest",
     "start": "ROLLUP_HTTP_SERVER_URL=\"http://127.0.0.1:5004\" ts-node src/index.ts"
   },

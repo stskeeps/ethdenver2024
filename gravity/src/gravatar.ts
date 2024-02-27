@@ -1,22 +1,23 @@
+import { hexToNumber, numberToHex } from "viem"
 import { db } from "./store"
 
-type Gravatar = {
-  id: `0x${string}`,
+export type Gravatar = {
+  id: bigint,
   owner: `0x${string}`,
   displayName: string,
   imageUrl: string
 }
 
-export async function handleEvent(event: any) {
-  const p = event.params;
+export async function handleEvent(eventName: string, gravatar: Gravatar) {
   (await db()).run(`
     INSERT INTO Gravatar (id, owner, displayName, imageUrl)
-    VALUES ('${p.id}', '${p.owner}', '${p.displayName}', '${p.imageUrl}')
+    VALUES ('${numberToHex(gravatar.id)}', '${gravatar.owner}', '${gravatar.displayName}', '${gravatar.imageUrl}')
     ON CONFLICT(id)
-    DO UPDATE SET owner = '${p.owner}', displayName = '${p.displayName}', imageUrl = '${p.imageUrl}'
+    DO UPDATE SET owner = '${gravatar.owner}', displayName = '${gravatar.displayName}', imageUrl = '${gravatar.imageUrl}'
   `);
 }
 
-export async function get(id: string) : Promise<Gravatar> {
-  return (await db()).prepare(`SELECT * FROM Gravatar where id='${id}'`).getAsObject({}) as Gravatar;
+export async function get(id: bigint) : Promise<Gravatar> {
+  const result = (await db()).prepare(`SELECT * FROM Gravatar where id='${numberToHex(id)}'`).getAsObject({}) as any;
+  return result.id ? { ...result, id: hexToNumber(result.id) } : result;
 }

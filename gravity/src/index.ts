@@ -1,6 +1,5 @@
 import createClient from "openapi-fetch";
-import { handleNewGravatar, handleUpdatedGravatar } from "./mapping/mapping";
-import { BigInt} from "./graph-ts/types";
+import * as gravatar from "./gravatar";
 
 const rollupServer = process.env.ROLLUP_HTTP_SERVER_URL;
 console.log("HTTP rollup_server url is " + rollupServer);
@@ -11,7 +10,7 @@ const dehashEvents: any = async (data: any) => {
     {
       name: "NewGravatar",
       params: {
-        id: new BigInt(10n),
+        id: "0x1",
         owner: "0xF05D57a5BeD2d1B529C56001FC5810cc9afC0335",
         displayName: "George",
         imageUrl: "https://no.where"
@@ -20,7 +19,7 @@ const dehashEvents: any = async (data: any) => {
     {
       name: "UpdateGravatar",
       params: {
-        id: new BigInt(10n),
+        id: "0x1",
         owner: "0xF05D57a5BeD2d1B529C56001FC5810cc9afC0335",
         displayName: "George Clown",
         imageUrl: "https://some.where.else"
@@ -37,11 +36,7 @@ const handleInput = async (data: any) => {
   if (events && events.length) {
     for (const event of events) {
       console.log(`event: ${event.name}`)
-      if (event.name === "NewGravatar") {
-        await handleNewGravatar(event);
-      } else if (event.name === "UpdateGravatar") {
-        await handleUpdatedGravatar(event);
-      }
+      await gravatar.handleEvent(event);
     }
   }
   return "accept";

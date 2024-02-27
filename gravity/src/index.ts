@@ -1,6 +1,6 @@
 import createClient from "openapi-fetch";
-import { handleNewGravatar, handleUpdatedGravatar } from "./mapping";
-import { BigInt} from "../generated/graph-ts/types";
+import { handleNewGravatar, handleUpdatedGravatar } from "./mapping/mapping";
+import { BigInt} from "./graph-ts/types";
 
 const rollupServer = process.env.ROLLUP_HTTP_SERVER_URL;
 console.log("HTTP rollup_server url is " + rollupServer);
@@ -38,9 +38,9 @@ const handleInput = async (data: any) => {
     for (const event of events) {
       console.log(`event: ${event.name}`)
       if (event.name === "NewGravatar") {
-        handleNewGravatar(event);
+        await handleNewGravatar(event);
       } else if (event.name === "UpdateGravatar") {
-        handleUpdatedGravatar(event);
+        await handleUpdatedGravatar(event);
       }
     }
   }

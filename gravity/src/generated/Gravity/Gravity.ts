@@ -1,4 +1,4 @@
-import { BigInt, Address } from "../graph-ts/types"
+import { BigInt, Address } from "../../graph-ts/types"
 
 type NewGravatar__Params = {
   id: BigInt,

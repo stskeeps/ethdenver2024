@@ -1,5 +1,5 @@
-import { Address } from "./graph-ts/types";
-import * as store from "./graph-ts/store"
+import { Address } from "../graph-ts/types";
+import * as store from "../graph-ts/store"
 
 export class Gravatar {
   data:any = {};
@@ -7,12 +7,12 @@ export class Gravatar {
   constructor(private id: `0x${string}`) {
   }
 
-  save(): void {
-    store.set("Gravatar", this.id, this.data);
+  async save() {
+    await store.set("Gravatar", this.id, this.data);
   }
 
-  static load(id: `0x${string}`): Gravatar | null {
-    const loaded = store.get("Gravatar", id);
+  static async load(id: `0x${string}`): Promise<Gravatar | null> {
+    const loaded = await store.get("Gravatar", id);
     if (loaded && loaded.data) {
       const result = new Gravatar(id);
       result.data = JSON.parse(loaded.data);

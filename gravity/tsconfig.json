@@ -18,5 +18,5 @@
     "target": "ES2022"
   },
   "include": ["."],
-  "exclude": ["dist", "node_modules"]
+  "exclude": ["test", "dist", "node_modules"]
 }

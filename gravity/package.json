@@ -3,13 +3,13 @@
   "version": "0.1.0",
   "description": "TypeScript DApp",
   "dependencies": {
-    "better-sqlite3": "^9.4.3",
     "openapi-fetch": "^0.7",
+    "sql.js": "^1.10.2",
     "viem": "^1"
   },
   "devDependencies": {
-    "@types/better-sqlite3": "^7.6.9",
     "@types/node": "^20",
+    "@types/sql.js": "^1.4.9",
     "esbuild": "^0.19",
     "npm-run-all": "^4",
     "openapi-typescript": "^6",
@@ -18,9 +18,9 @@
     "vitest": "^0.34"
   },
   "scripts": {
-    "build": "run-s codegen compile",
-    "codegen": "ts-node schema.ts",
+    "build": "run-s compile",
     "compile": "tsc && esbuild ./src/index.ts --bundle --outfile=dist/index.js --platform=node --target=node20",
+    "test": "vitest",
     "start": "ROLLUP_HTTP_SERVER_URL=\"http://127.0.0.1:5004\" ts-node src/index.ts"
   },
   "keywords": [

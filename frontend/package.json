@@ -9,24 +9,31 @@
         "lint": "next lint"
     },
     "dependencies": {
-        "@mantine/core": "7.6.1",
-        "@mantine/hooks": "7.6.1",
+        "@helia/unixfs": "^3.0.0",
+        "@mantine/core": "^7.6.1",
+        "@mantine/hooks": "^7.6.1",
+        "blockstore-idb": "^1.1.8",
+        "buffer": "^6.0.3",
+        "datastore-idb": "^2.1.8",
         "helia": "^4.0.1",
-        "next": "14.1.0",
-        "react": "18.2.0",
-        "react-dom": "18.2.0",
+        "multiformats": "^13.1.0",
+        "next": "14.0.4",
+        "react": "^18.2.0",
+        "react-dom": "^18.2.0",
         "sql.js": "^1.10.2",
+        "swr": "^2.2.5",
         "viem": "^2.7.15"
     },
     "devDependencies": {
-        "@types/node": "20.11.20",
-        "@types/react": "18.2.60",
-        "@types/react-dom": "18.2.19",
-        "eslint": "8.57.0",
-        "eslint-config-next": "14.1.0",
+        "@types/node": "^20.11.21",
+        "@types/react": "^18.2.60",
+        "@types/react-dom": "^18.2.19",
+        "@types/sql.js": "^1.4.9",
+        "eslint": "^8.57.0",
+        "eslint-config-next": "^14.1.0",
         "postcss": "^8.4.35",
-        "postcss-preset-mantine": "1.13.0",
+        "postcss-preset-mantine": "^1.13.0",
         "postcss-simple-vars": "^7.0.1",
-        "typescript": "5.3.3"
+        "typescript": "^5.3.3"
     }
 }

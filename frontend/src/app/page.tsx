@@ -1,23 +1,44 @@
-import { Center, Group, Image, SimpleGrid, Stack, Title } from "@mantine/core";
+"use client";
+
+import {
+    Alert,
+    Center,
+    Group,
+    Image,
+    SimpleGrid,
+    Stack,
+    Title,
+} from "@mantine/core";
+import { Address } from "viem";
+
 import { Gravatar } from "../components/Gravatar";
+import { useGravatars } from "../hooks/Gravatar";
 
 export default function HomePage() {
-    const array = Array.from(Array(10).keys());
+    const { data, error, loading } = useGravatars(
+        "QmYe8v2cuYWAJHzhi59edgFNohq3WZTJdNfx6CWjcnKtEM"
+    );
+
+    const gravatars = data.map((gravatar) => {
+        const { id, owner, displayName, imageUrl } = gravatar;
+        return (
+            <Gravatar
+                key={id}
+                id={id}
+                displayName={displayName}
+                owner={owner as Address}
+                imageUrl={imageUrl}
+            />
+        );
+    });
     return (
         <Stack gap={20}>
-            <SimpleGrid cols={4}>
-                {array.map((index) => (
-                    <Gravatar
-                        id={index.toString()}
-                        key={index.toString()}
-                        displayName={`Happy User ${index + 1}`}
-                        owner="0x1234567890123456789012345678901234567890"
-                        imageUrl={`https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-${
-                            index + 1
-                        }.png`}
-                    />
-                ))}
-            </SimpleGrid>
+            {error && (
+                <Alert title="Error" variant="light" color="red">
+                    {error.message}
+                </Alert>
+            )}
+            <SimpleGrid cols={4}>{gravatars}</SimpleGrid>
             <Center>
                 <Group>
                     <Title>Verified by Fido</Title>

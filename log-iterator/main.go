@@ -1,13 +1,13 @@
 package main
 import (
+        "os"
         "fmt"
 	"github.com/ethereum/go-ethereum/common"
-	hexutil "github.com/ethereum/go-ethereum/common/hexutil"
 	"bytes"
 	"github.com/ethereum-optimism/optimism/op-program/client/mpt"
 	"io/ioutil"
-	"time"
 	"log"
+	"time"
         "net/http"      
         "github.com/ethereum/go-ethereum/core/types"
         "github.com/ethereum/go-ethereum/rlp"
@@ -52,12 +52,11 @@ func hint(x string) {
     defer response.Body.Close()
 
     // Read and print the response body (optional)
-    responseBody, err := ioutil.ReadAll(response.Body)
+    _, err = ioutil.ReadAll(response.Body)
     if err != nil {
         fmt.Printf("Failed to read response body: %s\n", err)
         return
     }
-    fmt.Println("Response:", string(responseBody))
 }
 
 func finish(x string) {
@@ -73,17 +72,17 @@ func finish(x string) {
     defer response.Body.Close()
 
     // Read and print the response body (optional)
-    responseBody, err := ioutil.ReadAll(response.Body)
+    _, err = ioutil.ReadAll(response.Body)
     if err != nil {
         fmt.Printf("Failed to read response body: %s\n", err)
         return
     }
-    fmt.Println("Response:", string(responseBody))
 }
 
 func main() {
-    hint("l1-block-header 0x6e4dd5b03a4fa7b85be4d6bd78bf641cf2fd1de92c8eb9b673c14edd349258d5")
-    blockHeader := dehash("6e4dd5b03a4fa7b85be4d6bd78bf641cf2fd1de92c8eb9b673c14edd349258d5")
+    hexBlockHash := os.Args[1]
+    hint("l1-block-header 0x" + hexBlockHash)
+    blockHeader := dehash(hexBlockHash)
     
     var header types.Header
     
@@ -91,46 +90,64 @@ func main() {
     if err != nil {
         log.Fatalf("Failed to decode block header: %v", err)
     }
-    fmt.Printf("Block Number: %d\n", header.Number.Uint64())
-    fmt.Printf("Parent Hash: %s\n", header.ParentHash.Hex())
-    fmt.Printf("Difficulty: %d\n", header.Difficulty.Uint64())
-    
-    fmt.Printf("ReceiptHash: %s\n", header.ReceiptHash.Hex())
-    hint("l1-receipts 0x6e4dd5b03a4fa7b85be4d6bd78bf641cf2fd1de92c8eb9b673c14edd349258d5");  
-    results := mpt.ReadTrie(common.HexToHash(header.ReceiptHash.Hex()), func(key common.Hash) []byte {
+    fmt.Printf("{\"parentHash\":\"%s\",\"transactions\":[", header.ParentHash.Hex());
+    hint("l1-transactions 0x" + hexBlockHash);  
+
+    results := mpt.ReadTrie(common.HexToHash(header.TxHash.Hex()), func(key common.Hash) []byte {
         return dehash(key.Hex()[2:])
     })
-    fmt.Printf("Receipts: %v\n", len(results))
     
+    tx_hashes := make ([]common.Hash, len(results))
     for count, element := range results {
-        var tx types.Receipt
-        var by []byte = element[1:]
-        fmt.Printf("receipt %i - %s\n", count, hexutil.Encode(by))
-        err := rlp.DecodeBytes(by, &tx)
+        var tx types.Transaction
+        err := tx.UnmarshalBinary(element)
+        if err != nil {
+             fmt.Printf("Failed to decode\n")
+        }
+        tx_hashes[count] = tx.Hash()
+/*        json, err := tx.MarshalJSON()
+        if err != nil {
+             fmt.Printf("Failed to marshall\n")
+        } */
+//        fmt.Printf("%s", json)
+        if count != len(results) - 1 {
+  //        fmt.Printf(",")
+        }
+    }
+    fmt.Printf("],\"receipts\":[")
+    hint("l1-receipts 0x" + hexBlockHash);  
+    results = mpt.ReadTrie(common.HexToHash(header.ReceiptHash.Hex()), func(key common.Hash) []byte {
+        return dehash(key.Hex()[2:])
+    })
+    
+        
+    for count, element := range results {
+        receipt := &types.Receipt{}
+         
+        err := receipt.UnmarshalBinary(element)
         if err != nil {
              fmt.Printf("Failed to decode\n");
         }
         
-        fmt.Printf("Status: %v\n", tx.Status)
-        for _, log := range tx.Logs {
-          fmt.Printf("log address %s\n", log.Address.Hex())
-          for _, topic := range log.Topics {
-            fmt.Printf("log topic %s\n", topic.Hex())
+        for count1, log := range receipt.Logs {
+          log.Index = uint(count1)
+          log.TxIndex = uint(count)
+          log.BlockNumber = header.Number.Uint64()
+          log.BlockHash = common.HexToHash("0x" + hexBlockHash)
+          log.TxHash = tx_hashes[count]
+          json, err := log.MarshalJSON()
+          if (err != nil) {
+          }
+          fmt.Printf("%s", json)
+          if count1 != len(receipt.Logs) - 1 {
+            fmt.Printf(",")
           }
         }
     }
-    hint("l1-transactions 0x6e4dd5b03a4fa7b85be4d6bd78bf641cf2fd1de92c8eb9b673c14edd349258d5");  
-    results = mpt.ReadTrie(common.HexToHash(header.TxHash.Hex()), func(key common.Hash) []byte {
-        return dehash(key.Hex()[2:])
-    })
-    fmt.Printf("Transactions: %v\n", len(results))
-    
-    for count, element := range results {
-        var by []byte = element[1:]
-        fmt.Printf("tx %i - %s\n", count, hexutil.Encode(by))
+    fmt.Printf("]}\n")
+    if os.Args[2] == "1" {
+      time.Sleep(8 * time.Second) 
+      get_tx()
+      finish("")    
     }
-    fmt.Printf("Done analyzing")
-    time.Sleep(8 * time.Second) 
-    get_tx()
-    finish("")    
 }

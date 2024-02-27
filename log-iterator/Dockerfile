@@ -13,4 +13,4 @@ FROM --platform=linux/riscv64 ghcr.io/stskeeps/node:20-jammy-slim-estargz
 COPY --from=build /opt/cartesi/dapp/main /opt/cartesi/dapp/main
 ENV ROLLUP_HTTP_SERVER_URL="http://127.0.0.1:5004"
 
-ENTRYPOINT  ["/opt/cartesi/dapp/main"]
+ENTRYPOINT  ["/opt/cartesi/dapp/main", "6e4dd5b03a4fa7b85be4d6bd78bf641cf2fd1de92c8eb9b673c14edd349258d5", "1"]

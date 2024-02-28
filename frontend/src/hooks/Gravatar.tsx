@@ -21,7 +21,7 @@ export const useGravatars = (cid: string) => {
     );
 
     // load SQLite db
-    const { db } = useDatabase(urlFile);
+    const { db } = useDatabase(ipfsFile);
 
     // query DB
     const { result } = useQuery(

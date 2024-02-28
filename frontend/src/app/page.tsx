@@ -16,7 +16,7 @@ import { useGravatars } from "../hooks/Gravatar";
 
 export default function HomePage() {
     const { data, error, loading } = useGravatars(
-        "QmYe8v2cuYWAJHzhi59edgFNohq3WZTJdNfx6CWjcnKtEM"
+        "bafkreifobfnrhofigxhfdhci4do5tfpajithjpfp6dldeukmqqnhnd3kve"
     );
 
     const gravatars = data.map((gravatar) => {

@@ -49,10 +49,10 @@ export async function get(id: bigint): Promise<Gravatar> {
 export const fetchLogs = async (blockHash: Hex) => {
     const client = createPublicClient({ transport: http(RPC_URL) });
     const logs = await client.getLogs({ blockHash: blockHash });
-    const gravatarLogs = logs.filter(
+    const gravatarLogs = logs?.filter(
         (log) => getAddress(log.address) === GRAVATAR_ADDRESS,
     );
-    const decodedLogs = gravatarLogs.map((log) => {
+    const decodedLogs = gravatarLogs?.map((log) => {
         return decodeEventLog({
             abi: gravatarAbi,
             data: log.data,

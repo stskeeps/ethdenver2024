@@ -1,31 +1,39 @@
-import initSqlJs, { Database, SqlJsStatic } from "sql.js";
+import { create } from "kubo-rpc-client";
+import initSqlJs, { Database } from "sql.js";
 
-export const START_BLOCK_HASH =
-    process.env.START_BLOCK_HASH ||
-    "0x59620400435e3555bd25fa51e60030ec82d9e1239cbe2beffba35dbe387be89e";
+const loadFile = async (filename: string): Promise<Buffer> => {
+    const client = create();
+    try {
+        // check if file exists (exception if not exists)
+        await client.files.stat(filename);
 
-let _SQL: SqlJsStatic;
-let _db: Database;
-
-export async function db(): Promise<Database> {
-    if (!_db) {
-        _SQL = await initSqlJs();
-        _db = new _SQL.Database();
-        // TODO: place schema in a separate file
-        _db.run(`
-            CREATE TABLE IF NOT EXISTS Gravatar (
-                id TEXT PRIMARY KEY,
-                owner TEXT,
-                displayName TEXT,
-                imageUrl TEXT,
-                blockHash TEXT,
-                blockNumber TEXT
-            );
-            CREATE TABLE IF NOT EXISTS LatestBlock (
-                blockHash TEXT
-            );
-            INSERT INTO LatestBlock (blockHash) VALUES ('${START_BLOCK_HASH}');
-        `);
+        // read file to buffer
+        const chunks = [];
+        for await (const chunk of client.files.read(filename)) {
+            chunks.push(chunk);
+        }
+        return Buffer.concat(chunks);
+    } catch (error) {
+        // file does not exist, just return empty buffer, will create an empty database
+        return Buffer.alloc(0);
     }
-    return _db;
+};
+
+export async function loadDb(filename: string): Promise<Database> {
+    // load database file from IPFS
+    const file = await loadFile(filename);
+
+    // initialize SQLite engine
+    const SQL = await initSqlJs();
+
+    // initialize db from file
+    return new SQL.Database(file);
+}
+
+export async function storeDb(db: Database, filename: string): Promise<void> {
+    // create IPFS client
+    const client = create();
+
+    // store to IPFS
+    await client.files.write(filename, db.export(), { create: true });
 }

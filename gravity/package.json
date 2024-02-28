@@ -3,9 +3,12 @@
     "version": "0.1.0",
     "description": "TypeScript DApp",
     "dependencies": {
+        "abitype": "^1",
+        "kubo-rpc-client": "^3.0.3",
+        "multiformats": "^13.1.0",
         "openapi-fetch": "^0.7",
         "sql.js": "^1.10.2",
-        "viem": "^1"
+        "viem": "^2"
     },
     "devDependencies": {
         "@types/node": "^20",

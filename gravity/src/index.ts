@@ -1,15 +1,32 @@
-import { updateIndex } from "./dapp";
+import { Hex } from "viem";
 
-const rollupServer = process.env.ROLLUP_HTTP_SERVER_URL;
-console.log("HTTP rollup_server url is " + rollupServer);
+import { client } from "./client";
+import { Application } from "./application";
+import { loadDb, storeDb } from "./store";
+import { GravatarDatabase } from "./db";
+
+const startBlockHash =
+    (process.env.START_BLOCK_HASH as Hex) ||
+    "0x59620400435e3555bd25fa51e60030ec82d9e1239cbe2beffba35dbe387be89e";
 
 const main = async () => {
-    // TODO: get block hash from get_tx input
-    let status = await updateIndex(
-        "0x0a08af7a28c068dbd4fbecf3a7fa0eeefc2b2f5d671d780f2bb5c1cdc0d8e182",
-    );
-    // let status = await handleInput("0x6e4dd5b03a4fa7b85be4d6bd78bf641cf2fd1de92c8eb9b673c14edd349258d5");
-    console.log(`Result status: ${status}`);
+    // load db from IPFS
+    const dbFilename = "/state/gravatar.sqlite3";
+    const db = await loadDb(dbFilename);
+
+    // create gravatar db
+    const gravatarDb = new GravatarDatabase(db, startBlockHash);
+
+    // TODO: get block hash from get_tx input metadata
+    const currentBlockHash =
+        "0x0a08af7a28c068dbd4fbecf3a7fa0eeefc2b2f5d671d780f2bb5c1cdc0d8e182";
+
+    // update index
+    const app = new Application(gravatarDb, client);
+    await app.updateDb(currentBlockHash);
+
+    // store db back to IPFS
+    await storeDb(db, dbFilename);
 };
 
 main().catch((e) => {

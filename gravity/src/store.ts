@@ -1,4 +1,4 @@
-import initSqlJs, { Database, SqlJsStatic } from 'sql.js';
+import initSqlJs, { Database, SqlJsStatic } from "sql.js";
 
 let _SQL: SqlJsStatic;
 let _db: Database;
@@ -15,8 +15,6 @@ export async function db(): Promise<Database> {
                 imageUrl TEXT
             )
         `);
-
     }
     return _db;
 }
-

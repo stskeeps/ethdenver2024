@@ -13,6 +13,7 @@
     "esbuild": "^0.19",
     "npm-run-all": "^4",
     "openapi-typescript": "^6",
+    "prettier": "^3.2.5",
     "ts-node": "^10",
     "typescript": "^5",
     "vitest": "^0.34"

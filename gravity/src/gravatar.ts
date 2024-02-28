@@ -1,16 +1,14 @@
 import {
     Address,
     Hex,
-    createPublicClient,
     decodeEventLog,
     getAddress,
     hexToNumber,
-    http,
     numberToHex,
 } from "viem";
 import { db } from "./store";
-import { RPC_URL } from ".";
 import gravatarAbi from "./gravatarAbi";
+import { client } from "./client";
 
 const GRAVATAR_ADDRESS =
     process.env.GRAVATAR_ADDRESS ||
@@ -47,7 +45,6 @@ export async function get(id: bigint): Promise<Gravatar> {
 }
 
 export const fetchLogs = async (blockHash: Hex) => {
-    const client = createPublicClient({ transport: http(RPC_URL) });
     const logs = await client.getLogs({ blockHash: blockHash });
     const gravatarLogs = logs?.filter(
         (log) => getAddress(log.address) === GRAVATAR_ADDRESS,

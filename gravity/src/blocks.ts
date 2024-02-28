@@ -1,5 +1,5 @@
-import { Hex, createPublicClient, http } from "viem";
-import { RPC_URL } from ".";
+import { Hex } from "viem";
+import { client } from "./client";
 
 const INDEX_FROM_BLOCK =
     process.env.INDEX_FROM_BLOCK ||
@@ -7,7 +7,6 @@ const INDEX_FROM_BLOCK =
 
 export const fetchBlockRange = async (blockHash: Hex) => {
     const fromBlock = INDEX_FROM_BLOCK;
-    const client = createPublicClient({ transport: http(RPC_URL) });
     let blocks: any[] = [];
     while (blockHash && blockHash !== fromBlock) {
         const block = await client.getBlock({ blockHash });

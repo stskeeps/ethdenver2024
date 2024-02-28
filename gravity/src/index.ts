@@ -3,9 +3,6 @@ import { updateIndex } from "./dapp";
 const rollupServer = process.env.ROLLUP_HTTP_SERVER_URL;
 console.log("HTTP rollup_server url is " + rollupServer);
 
-// TODO: change for local JSON-RPC endpoint
-export const RPC_URL = process.env.RPC_URL;
-
 const main = async () => {
     // TODO: get block hash from get_tx input
     let status = await updateIndex(

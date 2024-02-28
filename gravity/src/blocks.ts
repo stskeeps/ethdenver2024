@@ -1,14 +1,22 @@
 import { Hex } from "viem";
 import { client } from "./client";
+import { db } from "./store";
 
-const INDEX_FROM_BLOCK =
-    process.env.INDEX_FROM_BLOCK ||
-    "0x59620400435e3555bd25fa51e60030ec82d9e1239cbe2beffba35dbe387be89e";
+export const getLatestBlockHash = async () => {
+    const result = (await db())
+        .prepare(`SELECT blockHash FROM LatestBlock`)
+        .getAsObject({});
+    return result.blockHash as Hex;
+};
+
+export const updateLatestBlockHash = async (blockHash: Hex) => {
+    (await db()).run(`UPDATE LatestBlock SET blockHash = '${blockHash}'`);
+};
 
 export const fetchBlockRange = async (blockHash: Hex) => {
-    const fromBlock = INDEX_FROM_BLOCK;
+    const latestBlockHash = await getLatestBlockHash();
     let blocks: any[] = [];
-    while (blockHash && blockHash !== fromBlock) {
+    while (blockHash && blockHash !== latestBlockHash) {
         const block = await client.getBlock({ blockHash });
         if (!block) {
             break;
@@ -16,5 +24,5 @@ export const fetchBlockRange = async (blockHash: Hex) => {
         blocks.push(block);
         blockHash = block.parentHash;
     }
-    return blocks;
+    return blocks.reverse();
 };

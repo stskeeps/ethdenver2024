@@ -9,7 +9,7 @@ export const updateIndex = async (blockHash: Hex) => {
     // fetch all blocks from last processed block to specified block
     const fetched = await blocks.fetchBlockRange(blockHash);
 
-    for (const block of fetched) {
+    for (const block of fetched.reverse()) {
         const logs = await gravatar.fetchLogs(block.hash);
         for (const log of logs) {
             await gravatar.handleEvent(log.eventName, log.args);

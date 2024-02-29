@@ -26,6 +26,7 @@
         "test:live": "TEST_LIVE=1 vitest",
         "start": "ROLLUP_HTTP_SERVER_URL=\"http://127.0.0.1:5004\" ts-node src/index.ts"
     },
+    "type": "module",
     "keywords": [
         "cartesi"
     ],

@@ -56,7 +56,7 @@ export const useQuery = (db: Database | null, sql: string) => {
                 setLoading(false);
             }
         }
-    }, [db]);
+    }, [db, sql]);
     return {
         loading,
         result,

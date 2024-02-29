@@ -59,11 +59,11 @@ export const HeliaProvider = ({ children }: { children: ReactNode }) => {
                 setError(true);
             }
         }
-    }, []);
+    }, [helia]);
 
     useEffect(() => {
         startHelia();
-    }, []);
+    }, [startHelia]);
 
     return (
         <HeliaContext.Provider

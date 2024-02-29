@@ -1,9 +1,11 @@
-import { create } from "kubo-rpc-client";
+import { IPFSHTTPClient } from "kubo-rpc-client";
 import path from "path";
 import initSqlJs, { Database } from "sql.js";
 
-const loadFile = async (filename: string): Promise<Buffer> => {
-    const client = create();
+const loadFile = async (
+    client: IPFSHTTPClient,
+    filename: string,
+): Promise<Buffer> => {
     try {
         // check if file exists (exception if not exists)
         await client.files.stat(filename);
@@ -20,9 +22,12 @@ const loadFile = async (filename: string): Promise<Buffer> => {
     }
 };
 
-export async function loadDb(filename: string): Promise<Database> {
+export async function loadDb(
+    client: IPFSHTTPClient,
+    filename: string,
+): Promise<Database> {
     // load database file from IPFS
-    const file = await loadFile(filename);
+    const file = await loadFile(client, filename);
 
     // initialize SQLite engine
     const SQL = await initSqlJs();
@@ -31,10 +36,11 @@ export async function loadDb(filename: string): Promise<Database> {
     return new SQL.Database(file);
 }
 
-export async function storeDb(db: Database, filename: string): Promise<void> {
-    // create IPFS client
-    const client = create();
-
+export async function storeDb(
+    client: IPFSHTTPClient,
+    db: Database,
+    filename: string,
+): Promise<void> {
     // extract directory name
     const dirname = path.dirname(filename);
 

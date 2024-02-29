@@ -1,4 +1,4 @@
-import { Address, Hex, PublicClient, parseEventLogs } from "viem";
+import { Address, Hash, PublicClient, parseEventLogs } from "viem";
 
 import { GravatarDatabase } from "./db";
 import gravatarAbi from "./gravatarAbi";
@@ -18,7 +18,7 @@ export class Application {
         this.gravatarRegistry = gravatarRegistry;
     }
 
-    private fetchBlockRange = async (from: Hex, to: Hex) => {
+    private fetchBlockRange = async (from: Hash, to: Hash) => {
         // fetch blocks from RPC provider one by one, in reverse order using parentHash
         const blocks = [];
         let blockHash = from;
@@ -36,7 +36,7 @@ export class Application {
         return blocks.reverse();
     };
 
-    private fetchLogs = async (address: Address, blockHash: Hex) => {
+    private fetchLogs = async (address: Address, blockHash: Hash) => {
         // get logs from provider
         const logs = await this.client.getLogs({ address, blockHash });
 
@@ -57,7 +57,7 @@ export class Application {
         return { newGravatarLogs, updateGravatarLogs };
     };
 
-    public async updateDb(blockHash: Hex) {
+    public async updateDb(blockHash: Hash) {
         console.log(`updating database based on block hash ${blockHash}`);
 
         // get block the database "is at"

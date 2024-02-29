@@ -1,5 +1,5 @@
 import { Database } from "sql.js";
-import { Address, Hex, hexToBigInt, numberToHex } from "viem";
+import { Address, Hash, hexToBigInt, numberToHex } from "viem";
 
 import { schema } from "./schema";
 
@@ -8,14 +8,14 @@ export type Gravatar = {
     owner: Address;
     displayName: string;
     imageUrl: string;
-    blockHash: Hex;
+    blockHash: Hash;
     blockNumber: bigint;
 };
 
 export class GravatarDatabase {
     private db: Database;
 
-    constructor(db: Database, startBlock: Hex) {
+    constructor(db: Database, startBlock: Hash) {
         this.db = db;
 
         // create table if not exists
@@ -61,10 +61,10 @@ export class GravatarDatabase {
         const result = this.db
             .prepare(`SELECT blockHash FROM LatestBlock`)
             .getAsObject({});
-        return result.blockHash as Hex;
+        return result.blockHash as Hash;
     }
 
-    async updateLatestBlockHash(blockHash: Hex) {
+    async updateLatestBlockHash(blockHash: Hash) {
         this.db.run(`UPDATE LatestBlock SET blockHash = '${blockHash}'`);
     }
 

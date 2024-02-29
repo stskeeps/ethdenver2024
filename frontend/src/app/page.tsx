@@ -19,13 +19,11 @@ import { useGravatars } from "../hooks/Gravatar";
 
 export default function HomePage() {
     const cid = useMemo(
-        () =>
-            CID.parse(
-                "bafkreifobfnrhofigxhfdhci4do5tfpajithjpfp6dldeukmqqnhnd3kve"
-            ),
+        () => CID.parse("QmfVNAkBznZ9iK6e4PTLjGHYyARAZ8uLEGz5HVim8ywkDW"),
         []
     );
-    const { data, error, loading } = useGravatars(cid);
+    const filename = "/gravatar.sqlite3";
+    const { data, error, loading } = useGravatars(cid, filename);
 
     const gravatars = data.map((gravatar) => {
         const { id, owner, displayName, imageUrl } = gravatar;

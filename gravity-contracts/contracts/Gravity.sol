@@ -15,14 +15,14 @@ contract GravatarRegistry {
   mapping (uint => address) public gravatarToOwner;
   mapping (address => uint) public ownerToGravatar;
 
-  function createGravatar(string _displayName, string _imageUrl) public {
-    require(ownerToGravatar[msg.sender] == 0);
-    uint id = gravatars.push(Gravatar(msg.sender, _displayName, _imageUrl)) - 1;
+  function createGravatar(address _owner, string _displayName, string _imageUrl) public {
+    require(ownerToGravatar[_owner] == 0);
+    uint id = gravatars.push(Gravatar(_owner, _displayName, _imageUrl)) - 1;
 
-    gravatarToOwner[id] = msg.sender;
-    ownerToGravatar[msg.sender] = id;
+    gravatarToOwner[id] = _owner;
+    ownerToGravatar[_owner] = id;
 
-    emit NewGravatar(id, msg.sender, _displayName, _imageUrl);
+    emit NewGravatar(id, _owner, _displayName, _imageUrl);
   }
 
   function getGravatar(address owner) public view returns (string, string) {

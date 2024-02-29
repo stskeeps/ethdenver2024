@@ -1,6 +1,6 @@
 # Gravity contracts
 
-GravatarRegistry deployed on Sepolia at address [0x8fB7Fb99f279a135981Fe509A1a6c25A4F337F52](https://sepolia.etherscan.io/address/0x8fB7Fb99f279a135981Fe509A1a6c25A4F337F52)
+GravatarRegistry deployed on Sepolia at address [0x08d08e320e2b25184173331FcCCa122E4129523f](https://sepolia.etherscan.io/address/0x08d08e320e2b25184173331FcCCa122E4129523f)
 
 To deploy again, run:
 

@@ -3,17 +3,19 @@ import { Address, Hex, PublicClient, parseEventLogs } from "viem";
 import { GravatarDatabase } from "./db";
 import gravatarAbi from "./gravatarAbi";
 
-const GRAVATAR_ADDRESS: Address =
-    (process.env.GRAVATAR_ADDRESS as Address) ||
-    "0x08d08e320e2b25184173331FcCCa122E4129523f";
-
 export class Application {
     private client: PublicClient;
     public readonly db: GravatarDatabase;
+    private gravatarRegistry: Address;
 
-    constructor(db: GravatarDatabase, client: PublicClient) {
+    constructor(
+        db: GravatarDatabase,
+        client: PublicClient,
+        gravatarRegistry: Address,
+    ) {
         this.client = client;
         this.db = db;
+        this.gravatarRegistry = gravatarRegistry;
     }
 
     private fetchBlockRange = async (from: Hex, to: Hex) => {
@@ -65,7 +67,7 @@ export class Application {
 
         for (const block of blocks) {
             const { newGravatarLogs, updateGravatarLogs } =
-                await this.fetchLogs(GRAVATAR_ADDRESS, block.hash);
+                await this.fetchLogs(this.gravatarRegistry, block.hash);
 
             for (const log of newGravatarLogs) {
                 const entity = { ...log, ...log.args };

@@ -1,15 +1,21 @@
-import { Hex } from "viem";
+import { Address, Hex, createPublicClient, http } from "viem";
 
-import { client } from "./client";
 import { Application } from "./application";
 import { loadDb, storeDb } from "./store";
 import { GravatarDatabase } from "./db";
 
+const rpcUrl = process.env.RPC_URL;
+const gravatarAddress: Address =
+    (process.env.GRAVATAR_ADDRESS as Address) ||
+    "0x08d08e320e2b25184173331FcCCa122E4129523f";
+
 const startBlockHash =
     (process.env.START_BLOCK_HASH as Hex) ||
-    "0x59620400435e3555bd25fa51e60030ec82d9e1239cbe2beffba35dbe387be89e";
+    "0xe3569d46c9698490cc7d24fffb056f1d81e60930ef33addbf96547a1ba9cb483"; // block of deployment of GravatarRegistry on sepolia
 
 const main = async () => {
+    const client = createPublicClient({ transport: http(rpcUrl) });
+
     // load db from IPFS
     const dbFilename = "/state/gravatar.sqlite3";
     const db = await loadDb(dbFilename);
@@ -19,10 +25,10 @@ const main = async () => {
 
     // TODO: get block hash from get_tx input metadata
     const currentBlockHash =
-        "0x0a08af7a28c068dbd4fbecf3a7fa0eeefc2b2f5d671d780f2bb5c1cdc0d8e182";
+        "0x5fd72d79165dc9940882a1b9bb415bed4af94a349fbfdbcc5aea9abd1a06c49b"; // block 5384042 on sepolia
 
     // update index
-    const app = new Application(gravatarDb, client);
+    const app = new Application(gravatarDb, client, gravatarAddress);
     await app.updateDb(currentBlockHash);
 
     // store db back to IPFS

@@ -1,4 +1,5 @@
 import { create } from "kubo-rpc-client";
+import path from "path";
 import initSqlJs, { Database } from "sql.js";
 
 const loadFile = async (filename: string): Promise<Buffer> => {
@@ -33,6 +34,12 @@ export async function loadDb(filename: string): Promise<Database> {
 export async function storeDb(db: Database, filename: string): Promise<void> {
     // create IPFS client
     const client = create();
+
+    // extract directory name
+    const dirname = path.dirname(filename);
+
+    // create intermediate directories if they don't exist
+    client.files.mkdir(dirname, { parents: true });
 
     // store to IPFS
     await client.files.write(filename, db.export(), { create: true });

@@ -1,6 +1,5 @@
 "use client";
 import { CID } from "multiformats/cid";
-import { useState } from "react";
 import useSWR from "swr";
 
 import { useFile } from "./Helia";
@@ -8,8 +7,6 @@ import { Gravatar } from "../types";
 import { useDatabase, useQuery } from "./SQLite";
 
 export const useGravatars = (cid: CID, path?: string) => {
-    const [error, setError] = useState<Error | null>(null);
-
     // fetch db from IPFS (XXX: not working yet)
     const {
         data: ipfsFile,
@@ -25,7 +22,7 @@ export const useGravatars = (cid: CID, path?: string) => {
     );
 
     // load SQLite db
-    const { db, loading: dbLoading } = useDatabase(ipfsFile);
+    const { db, error: dbError, loading: dbLoading } = useDatabase(ipfsFile);
 
     // query DB
     const { result } = useQuery(
@@ -45,7 +42,7 @@ export const useGravatars = (cid: CID, path?: string) => {
 
     return {
         data,
-        error: error || ipfsError,
+        error: ipfsError || dbError,
         loading: ipfsLoading || dbLoading,
     };
 };

@@ -360,10 +360,10 @@ func extractLogsFromBlock(hexBlockHash string) []*types.Log {
 
 func main() {
 	http.HandleFunc("/jsonrpc", jsonRpcHandler)
-	fmt.Println("Server is listening on port 8042...")
+	fmt.Println("Server is listening on port 8545...")
 	f, _ := os.Create("/tmp/main.pid")
 	defer f.Close()
-	if err := http.ListenAndServe(":8042", nil); err != nil {
+	if err := http.ListenAndServe(":8545", nil); err != nil {
 		fmt.Printf("Failed to start server: %v\n", err)
 	}
 }

@@ -11,7 +11,7 @@ sleep 1
 curl http://127.0.0.1:5004/get_tx
 
 curl --request POST \
-     --url http://127.0.0.1:8042/jsonrpc  \
+     --url http://127.0.0.1:8545/jsonrpc  \
      --header 'accept: application/json' \
      --header 'content-type: application/json' \
      --data '
@@ -43,7 +43,7 @@ exit 0
 # never reaches here
 
 curl --request POST \
-     --url http://127.0.0.1:8042/jsonrpc \
+     --url http://127.0.0.1:8545/jsonrpc \
      --header 'accept: application/json' \
      --header 'content-type: application/json' \
      --data '
@@ -55,7 +55,7 @@ curl --request POST \
 '
 
 curl --request POST \
-     --url http://127.0.0.1:8042/jsonrpc \
+     --url http://127.0.0.1:8545/jsonrpc \
      --header 'accept: application/json' \
      --header 'content-type: application/json' \
      --data '
@@ -71,7 +71,7 @@ curl --request POST \
 '
 
 curl --request POST \
-     --url http://127.0.0.1:8042/jsonrpc \
+     --url http://127.0.0.1:8545/jsonrpc \
      --header 'accept: application/json' \
      --header 'content-type: application/json' \
      --data '

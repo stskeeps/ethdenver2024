@@ -8,11 +8,14 @@ import { Gravatar } from "../types";
 import { useDatabase, useQuery } from "./SQLite";
 
 export const useGravatars = (cid: CID, path?: string) => {
-    const [loading, setLoading] = useState(false);
     const [error, setError] = useState<Error | null>(null);
 
     // fetch db from IPFS (XXX: not working yet)
-    const { data: ipfsFile, error: ipfsError } = useFile(cid, path);
+    const {
+        data: ipfsFile,
+        error: ipfsError,
+        loading: ipfsLoading,
+    } = useFile(cid, path);
 
     // fetch db file (XXX: replace by IPFS cat)
     const { data: urlFile } = useSWR("/gravatar.sqlite3", (url) =>
@@ -22,7 +25,7 @@ export const useGravatars = (cid: CID, path?: string) => {
     );
 
     // load SQLite db
-    const { db } = useDatabase(ipfsFile);
+    const { db, loading: dbLoading } = useDatabase(ipfsFile);
 
     // query DB
     const { result } = useQuery(
@@ -43,6 +46,6 @@ export const useGravatars = (cid: CID, path?: string) => {
     return {
         data,
         error: error || ipfsError,
-        loading,
+        loading: ipfsLoading || dbLoading,
     };
 };

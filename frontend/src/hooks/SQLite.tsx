@@ -8,10 +8,11 @@ export const useDatabase = (
 ) => {
     const [db, setDb] = useState<Database | null>(null);
     const [error, setError] = useState<Error | null>(null);
-    const [loading, setLoading] = useState<boolean>(true);
+    const [loading, setLoading] = useState<boolean>(false);
 
     useEffect(() => {
         if (data) {
+            setLoading(true);
             initSqlJs({
                 // Fetch sql.js wasm file from CDN
                 // This way, we don't need to deal with webpack
@@ -58,6 +59,7 @@ export const useQuery = (db: Database | null, sql: string) => {
         }
     }, [db, sql]);
     return {
+        error,
         loading,
         result,
     };

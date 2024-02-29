@@ -12,7 +12,7 @@ export const useHelia = () => {
 };
 
 export const useFile = (cid: CID, path?: string) => {
-    const { fs } = useHelia();
+    const { fs, starting } = useHelia();
     const [data, setData] = useState<Buffer | undefined>();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<Error | null>(null);
@@ -35,13 +35,16 @@ export const useFile = (cid: CID, path?: string) => {
             read(fs, cid, path)
                 .then(setData)
                 .then(() => setLoading(false))
-                .catch(setError);
+                .catch((error) => {
+                    setError(error);
+                    setLoading(false);
+                });
         }
     }, [cid, fs, path]);
 
     return {
         data,
         error,
-        loading,
+        loading: starting || loading,
     };
 };

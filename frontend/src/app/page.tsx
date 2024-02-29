@@ -5,6 +5,7 @@ import {
     Center,
     Group,
     Image,
+    Loader,
     SimpleGrid,
     Stack,
     Title,
@@ -44,6 +45,11 @@ export default function HomePage() {
                 <Alert title="Error" variant="light" color="red">
                     {error.message}
                 </Alert>
+            )}
+            {loading && (
+                <Center>
+                    <Loader />
+                </Center>
             )}
             <SimpleGrid cols={4}>{gravatars}</SimpleGrid>
             <Center>

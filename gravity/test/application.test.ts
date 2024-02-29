@@ -1,51 +1,89 @@
 import initSqlJs from "sql.js";
-import { zeroAddress } from "viem";
+import { encodeAbiParameters, parseAbiParameters, zeroHash } from "viem";
 import { describe, expect, test } from "vitest";
 
 import { Application } from "../src/application";
 import { testClient } from "./client";
 import { GravatarDatabase } from "../src/db";
+import { encodeEventTopics } from "viem";
+import gravatarAbi from "../src/gravatarAbi";
 
 describe("application", () => {
     test("list empty", async () => {
+        const gravatarAddress = "0x08d08e320e2b25184173331FcCCa122E4129523f";
+
         const SQL = await initSqlJs();
         const db = new SQL.Database();
-        const gravatarDb = new GravatarDatabase(db, zeroAddress);
+        const gravatarDb = new GravatarDatabase(db, gravatarAddress);
         const client = testClient({ blocks: [], logs: [] });
-        const dapp = new Application(gravatarDb, client);
+        const dapp = new Application(gravatarDb, client, zeroHash);
         expect(await dapp.db.count()).toEqual(0);
     });
 
-    test("with 2 events", async () => {
-        const SQL = await initSqlJs();
-        const db = new SQL.Database();
-        const gravatarDb = new GravatarDatabase(db, zeroAddress);
-
-        // TODO: mock block and logs data so this test works
+    test("with 2 NewGravatar events in same block", async () => {
+        const gravatarAddress = "0x08d08e320e2b25184173331FcCCa122E4129523f";
         const latestBlock =
             "0x5d5cffb4a2e11140ba1d20bda13306103c705a4c70816860c1e6a93a7bce04ce";
 
-        const client = testClient({ blocks: [], logs: [] });
-        /*await gravatar.handleEvent("NewGravatar", {
-            id: 1n,
-            owner: "0xF05D57a5BeD2d1B529C56001FC5810cc9afC0335",
-            displayName: "George",
-            imageUrl: "https://no.where",
-            blockHash:
-                "0x5d5cffb4a2e11140ba1d20bda13306103c705a4c70816860c1e6a93a7bce04ce",
-            blockNumber: 7426646n,
-        });
-        await gravatar.handleEvent("NewGravatar", {
-            id: 2n,
-            owner: "0xF05D57a5BeD2d1B529C56001FC5810cc9afC0336",
-            displayName: "John",
-            imageUrl: "https://some.where",
-            blockHash:
-                "0x5d5cffb4a2e11140ba1d20bda13306103c705a4c70816860c1e6a93a7bce04ce",
-            blockNumber: 7426646n,
-        });*/
+        const SQL = await initSqlJs();
+        const db = new SQL.Database();
+        const gravatarDb = new GravatarDatabase(db, zeroHash);
 
-        const application = new Application(gravatarDb, client);
+        const client = testClient({
+            blocks: [{ hash: latestBlock }],
+            logs: [
+                {
+                    address: gravatarAddress,
+                    blockHash: latestBlock,
+                    blockNumber: 7426646n,
+                    topics: [
+                        encodeEventTopics({
+                            abi: gravatarAbi,
+                            eventName: "NewGravatar",
+                        })[0],
+                    ],
+                    data: encodeAbiParameters(
+                        parseAbiParameters(
+                            "uint256 id,address owner,string displayName,string imageUrl",
+                        ),
+                        [
+                            1n,
+                            "0xF05D57a5BeD2d1B529C56001FC5810cc9afC0335",
+                            "George",
+                            "https://no.where",
+                        ],
+                    ),
+                },
+                {
+                    address: gravatarAddress,
+                    blockHash: latestBlock,
+                    blockNumber: 7426646n,
+                    topics: [
+                        encodeEventTopics({
+                            abi: gravatarAbi,
+                            eventName: "NewGravatar",
+                        })[0],
+                    ],
+                    data: encodeAbiParameters(
+                        parseAbiParameters(
+                            "uint256 id,address owner,string displayName,string imageUrl",
+                        ),
+                        [
+                            2n,
+                            "0xF05D57a5BeD2d1B529C56001FC5810cc9afC0335",
+                            "John",
+                            "https://some.where",
+                        ],
+                    ),
+                },
+            ],
+        });
+
+        const application = new Application(
+            gravatarDb,
+            client,
+            gravatarAddress,
+        );
         await application.updateDb(latestBlock);
 
         const result1 = await application.db.get(1n);

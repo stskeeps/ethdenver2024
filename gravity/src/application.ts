@@ -65,11 +65,13 @@ export class Application {
         console.log(`latest block hash in database is ${latestBlockHash}`);
 
         // fetch all blocks from latest to where we are up to date
-        console.log(`fetching blocks from ${blockHash} to ${latestBlockHash}`);
+        console.log(
+            `fetching blocks from ${blockHash} back to ${latestBlockHash}`,
+        );
         const blocks = await this.fetchBlockRange(blockHash, latestBlockHash);
 
         for (const block of blocks) {
-            console.log(`fetching logs from block ${block.hash}`);
+            console.log(`fetching logs of block ${block.hash}`);
             const { newGravatarLogs, updateGravatarLogs } =
                 await this.fetchLogs(this.gravatarRegistry, block.hash);
 

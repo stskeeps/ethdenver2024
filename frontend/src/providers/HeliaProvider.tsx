@@ -4,13 +4,7 @@ import { unixfs, UnixFS } from "@helia/unixfs";
 import { IDBBlockstore } from "blockstore-idb";
 import { IDBDatastore } from "datastore-idb";
 import { createHelia, Helia } from "helia";
-import {
-    createContext,
-    ReactNode,
-    useCallback,
-    useEffect,
-    useState,
-} from "react";
+import { createContext, ReactNode, useEffect, useState } from "react";
 
 export type HeliaContextType = {
     helia: Helia | null;
@@ -32,38 +26,28 @@ export const HeliaProvider = ({ children }: { children: ReactNode }) => {
     const [starting, setStarting] = useState(true);
     const [error, setError] = useState(false);
 
-    const startHelia = useCallback(async () => {
-        if (helia) {
-            console.info("helia already started");
-        } else if (window.helia) {
-            console.info("found a windowed instance of helia, populating ...");
-            setHelia(window.helia);
+    useEffect(() => {
+        const startHelia = async () => {
+            const blockstore = new IDBBlockstore("helia-blocks");
+            const datastore = new IDBDatastore("helia-data");
 
-            // Type error below:
-            // Argument of type null is not assignable to parameter of type Blockstore
-            setFs(unixfs(window.helia));
-            setStarting(false);
-        } else {
-            try {
-                console.info("starting helia");
-                const blockstore = new IDBBlockstore("helia-blocks");
-                const datastore = new IDBDatastore("helia-data");
+            await Promise.all([blockstore.open(), datastore.open()]);
+            return createHelia({ blockstore, datastore });
+        };
 
-                await Promise.all([blockstore.open(), datastore.open()]);
-                const helia = await createHelia({ blockstore, datastore });
+        console.info("starting helia");
+        startHelia()
+            .then((helia) => {
                 setHelia(helia);
                 setFs(unixfs(helia));
                 setStarting(false);
-            } catch (e) {
-                console.error(e);
+            })
+            .catch((error) => {
+                console.error(error);
                 setError(true);
-            }
-        }
-    }, [helia]);
-
-    useEffect(() => {
-        startHelia();
-    }, [startHelia]);
+                setStarting(false);
+            });
+    }, []);
 
     return (
         <HeliaContext.Provider

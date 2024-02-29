@@ -18,7 +18,7 @@ export class Application {
         this.gravatarRegistry = gravatarRegistry;
     }
 
-    private fetchBlockRange = async (from: Hash, to: Hash) => {
+    private async fetchBlockRange(from: Hash, to: Hash) {
         // fetch blocks from RPC provider one by one, in reverse order using parentHash
         const blocks = [];
         let blockHash = from;
@@ -34,9 +34,20 @@ export class Application {
 
         // reverse block list so we can traverse in the forward order
         return blocks.reverse();
-    };
+    }
 
-    private fetchLogs = async (address: Address, blockHash: Hash) => {
+    private async getLatestBlockHash(): Promise<Hash> {
+        // get latest block number
+        const blockNumber = await this.client.getBlockNumber();
+
+        // get latest block (using the number)
+        const { hash } = await this.client.getBlock({ blockNumber });
+        console.log(`latest block hash in chain is ${hash}`);
+
+        return hash;
+    }
+
+    private async fetchLogs(address: Address, blockHash: Hash) {
         // get logs from provider
         const logs = await this.client.getLogs({ address, blockHash });
 
@@ -55,20 +66,21 @@ export class Application {
         });
 
         return { newGravatarLogs, updateGravatarLogs };
-    };
+    }
 
-    public async updateDb(blockHash: Hash) {
+    public async updateDb(blockHash?: Hash) {
         console.log(`updating database based on block hash ${blockHash}`);
 
         // get block the database "is at"
-        const latestBlockHash = await this.db.getLatestBlockHash();
-        console.log(`latest block hash in database is ${latestBlockHash}`);
+        const dbBlockHash = await this.db.getLatestBlockHash();
+        console.log(`latest block hash in database is ${dbBlockHash}`);
+
+        // get chain latest blockHash (or use provided blockHash)
+        const latestBlockHash = blockHash || (await this.getLatestBlockHash());
 
         // fetch all blocks from latest to where we are up to date
-        console.log(
-            `fetching blocks from ${blockHash} back to ${latestBlockHash}`,
-        );
-        const blocks = await this.fetchBlockRange(blockHash, latestBlockHash);
+        console.log(`fetching blocks from ${blockHash} back to ${dbBlockHash}`);
+        const blocks = await this.fetchBlockRange(latestBlockHash, dbBlockHash);
 
         for (const block of blocks) {
             console.log(`fetching logs of block ${block.hash}`);
@@ -94,6 +106,6 @@ export class Application {
 
         // update latest processed block
         console.log(`updating latest block hash to ${blockHash}`);
-        await this.db.updateLatestBlockHash(blockHash);
+        await this.db.updateLatestBlockHash(latestBlockHash);
     }
 }

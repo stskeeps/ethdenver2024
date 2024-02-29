@@ -14,9 +14,6 @@ import { Application } from "./application";
 import { GravatarDatabase } from "./db";
 import { loadDb, storeDb } from "./store";
 
-// TODO: get block hash from get_tx input metadata
-// 0x5fd72d79165dc9940882a1b9bb415bed4af94a349fbfdbcc5aea9abd1a06c49b
-
 // option parse as Address
 const addressParse = (value: string, _previous: Address): Address => {
     if (isAddress(value)) {
@@ -35,7 +32,7 @@ const hashParse = (value: string, _previous: Hash): Hash => {
 
 program
     .name("gravatar")
-    .argument("<blockHash>", "Current block hash", hashParse)
+    .argument("[blockHash]", "Current block hash", hashParse)
     .option(
         "-r, --rpc-url <url>",
         "Ethereum RPC URL",

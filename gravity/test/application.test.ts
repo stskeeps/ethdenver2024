@@ -1,11 +1,15 @@
 import initSqlJs from "sql.js";
-import { encodeAbiParameters, parseAbiParameters, zeroHash } from "viem";
+import {
+    encodeAbiParameters,
+    encodeEventTopics,
+    parseAbiParameters,
+    zeroHash,
+} from "viem";
 import { describe, expect, test } from "vitest";
 
 import { Application } from "../src/application";
 import { testClient } from "./client";
 import { GravatarDatabase } from "../src/db";
-import { encodeEventTopics } from "viem";
 import gravatarAbi from "../src/gravatarAbi";
 
 describe("application", () => {
@@ -20,9 +24,58 @@ describe("application", () => {
         expect(await dapp.db.count()).toEqual(0);
     });
 
+    test("with 1 NewGravatar event and no blockHash specified", async () => {
+        const gravatarAddress = "0x08d08e320e2b25184173331FcCCa122E4129523f";
+        const latestBlockHash =
+            "0x5d5cffb4a2e11140ba1d20bda13306103c705a4c70816860c1e6a93a7bce04ce";
+        const latestBlockNumber = 7426646n;
+
+        const SQL = await initSqlJs();
+        const db = new SQL.Database();
+        const gravatarDb = new GravatarDatabase(db, zeroHash);
+
+        const client = testClient({
+            blocks: [{ hash: latestBlockHash, number: latestBlockNumber }],
+            logs: [
+                {
+                    address: gravatarAddress,
+                    blockNumber: latestBlockNumber,
+                    blockHash: latestBlockHash,
+                    topics: [
+                        encodeEventTopics({
+                            abi: gravatarAbi,
+                            eventName: "NewGravatar",
+                        })[0],
+                    ],
+                    data: encodeAbiParameters(
+                        parseAbiParameters(
+                            "uint256 id,address owner,string displayName,string imageUrl",
+                        ),
+                        [
+                            1n,
+                            "0xF05D57a5BeD2d1B529C56001FC5810cc9afC0335",
+                            "George",
+                            "https://no.where",
+                        ],
+                    ),
+                },
+            ],
+        });
+
+        const application = new Application(
+            gravatarDb,
+            client,
+            gravatarAddress,
+        );
+        await application.updateDb();
+
+        const result = await application.db.get(1n);
+        expect(result.displayName).toEqual("George");
+    });
+
     test("with 2 NewGravatar events in same block", async () => {
         const gravatarAddress = "0x08d08e320e2b25184173331FcCCa122E4129523f";
-        const latestBlock =
+        const latestBlockHash =
             "0x5d5cffb4a2e11140ba1d20bda13306103c705a4c70816860c1e6a93a7bce04ce";
 
         const SQL = await initSqlJs();
@@ -30,11 +83,11 @@ describe("application", () => {
         const gravatarDb = new GravatarDatabase(db, zeroHash);
 
         const client = testClient({
-            blocks: [{ hash: latestBlock }],
+            blocks: [{ hash: latestBlockHash }],
             logs: [
                 {
                     address: gravatarAddress,
-                    blockHash: latestBlock,
+                    blockHash: latestBlockHash,
                     blockNumber: 7426646n,
                     topics: [
                         encodeEventTopics({
@@ -56,7 +109,7 @@ describe("application", () => {
                 },
                 {
                     address: gravatarAddress,
-                    blockHash: latestBlock,
+                    blockHash: latestBlockHash,
                     blockNumber: 7426646n,
                     topics: [
                         encodeEventTopics({
@@ -84,7 +137,7 @@ describe("application", () => {
             client,
             gravatarAddress,
         );
-        await application.updateDb(latestBlock);
+        await application.updateDb(latestBlockHash);
 
         const result1 = await application.db.get(1n);
         const result2 = await application.db.get(2n);

@@ -1,4 +1,4 @@
-import { Block, Log, createPublicClient, custom } from "viem";
+import { Block, Log, createPublicClient, custom, hexToBigInt } from "viem";
 
 export const testClient = (data: {
     blocks: Partial<Block>[];
@@ -8,6 +8,9 @@ export const testClient = (data: {
         transport: custom({
             request: async ({ method, params }) => {
                 switch (method) {
+                    case "eth_blockNumber": {
+                        return data.blocks.reverse().at(0)?.number;
+                    }
                     case "eth_getLogs": {
                         const { address, blockHash } = params[0];
                         return data.logs.filter(
@@ -16,9 +19,17 @@ export const testClient = (data: {
                                 log.blockHash === blockHash,
                         );
                     }
-                    case "eth_getBlockByHash":
+                    case "eth_getBlockByNumber": {
+                        const [blockNumberStr] = params;
+                        return data.blocks.find(
+                            (block) =>
+                                block.number === hexToBigInt(blockNumberStr),
+                        );
+                    }
+                    case "eth_getBlockByHash": {
                         const [hash] = params;
                         return data.blocks.find((block) => block.hash === hash);
+                    }
                 }
             },
         }),

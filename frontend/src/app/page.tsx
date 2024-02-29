@@ -9,15 +9,22 @@ import {
     Stack,
     Title,
 } from "@mantine/core";
+import { CID } from "multiformats/cid";
+import { useMemo } from "react";
 import { Address } from "viem";
 
 import { Gravatar } from "../components/Gravatar";
 import { useGravatars } from "../hooks/Gravatar";
 
 export default function HomePage() {
-    const { data, error, loading } = useGravatars(
-        "bafkreifobfnrhofigxhfdhci4do5tfpajithjpfp6dldeukmqqnhnd3kve"
+    const cid = useMemo(
+        () =>
+            CID.parse(
+                "bafkreifobfnrhofigxhfdhci4do5tfpajithjpfp6dldeukmqqnhnd3kve"
+            ),
+        []
     );
+    const { data, error, loading } = useGravatars(cid);
 
     const gravatars = data.map((gravatar) => {
         const { id, owner, displayName, imageUrl } = gravatar;

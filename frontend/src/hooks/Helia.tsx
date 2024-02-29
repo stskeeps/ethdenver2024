@@ -11,17 +11,17 @@ export const useHelia = () => {
     return useContext(HeliaContext);
 };
 
-export const useFile = (cid: string) => {
+export const useFile = (cid: CID, path?: string) => {
     const { fs } = useHelia();
     const [data, setData] = useState<Buffer | undefined>();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<Error | null>(null);
 
     useEffect(() => {
-        const read = async (fs: UnixFS, cid: CID) => {
+        const read = async (fs: UnixFS, cid: CID, path?: string) => {
             const chunks = [];
-            console.log(`Loading CID ${cid}`);
-            for await (const chunk of fs.cat(cid)) {
+            console.log(`Loading CID ${cid}${path ?? ""}`);
+            for await (const chunk of fs.cat(cid, { path })) {
                 console.log(`chunk: ${chunk.length}`);
                 chunks.push(chunk);
             }
@@ -32,12 +32,12 @@ export const useFile = (cid: string) => {
 
         if (fs) {
             setLoading(true);
-            read(fs, CID.parse(cid))
+            read(fs, cid, path)
                 .then(setData)
                 .then(() => setLoading(false))
                 .catch(setError);
         }
-    }, [cid, fs]);
+    }, [cid, fs, path]);
 
     return {
         data,

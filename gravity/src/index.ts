@@ -77,6 +77,7 @@ program
         const gravatarDb = new GravatarDatabase(db, genesisBlock);
 
         // create Ethereum client
+        console.log(`connecting to provider at ${rpcUrl}`);
         const client = createPublicClient({ transport: http(rpcUrl) });
 
         // update index

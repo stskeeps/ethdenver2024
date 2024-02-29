@@ -359,7 +359,7 @@ func extractLogsFromBlock(hexBlockHash string) []*types.Log {
 }
 
 func main() {
-	http.HandleFunc("/jsonrpc", jsonRpcHandler)
+	http.HandleFunc("/", jsonRpcHandler)
 	fmt.Println("Server is listening on port 8545...")
 	f, _ := os.Create("/tmp/main.pid")
 	defer f.Close()

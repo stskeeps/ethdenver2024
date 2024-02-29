@@ -9,24 +9,24 @@
         "lint": "next lint"
     },
     "dependencies": {
-        "@helia/unixfs": "^3.0.0",
+        "@helia/unixfs": "^3.0.1",
         "@mantine/core": "^7.6.1",
         "@mantine/hooks": "^7.6.1",
         "blockstore-idb": "^1.1.8",
         "buffer": "^6.0.3",
         "datastore-idb": "^2.1.8",
-        "helia": "^4.0.1",
+        "helia": "^4.0.2",
         "multiformats": "^13.1.0",
         "next": "14.0.4",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
         "sql.js": "^1.10.2",
         "swr": "^2.2.5",
-        "viem": "^2.7.15"
+        "viem": "^2.7.16"
     },
     "devDependencies": {
-        "@types/node": "^20.11.21",
-        "@types/react": "^18.2.60",
+        "@types/node": "^20.11.24",
+        "@types/react": "^18.2.61",
         "@types/react-dom": "^18.2.19",
         "@types/sql.js": "^1.4.9",
         "eslint": "^8.57.0",

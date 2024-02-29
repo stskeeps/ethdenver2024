@@ -17,7 +17,7 @@ const main = async () => {
     const client = createPublicClient({ transport: http(rpcUrl) });
 
     // load db from IPFS
-    const dbFilename = "/state/gravatar.sqlite3";
+    const dbFilename = "/gravatar.sqlite3";
     const db = await loadDb(dbFilename);
 
     // create gravatar db

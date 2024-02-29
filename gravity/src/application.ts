@@ -61,26 +61,36 @@ export class Application {
 
         // get block the database "is at"
         const latestBlockHash = await this.db.getLatestBlockHash();
+        console.log(`latest block hash in database is ${latestBlockHash}`);
 
         // fetch all blocks from latest to where we are up to date
+        console.log(`fetching blocks from ${blockHash} to ${latestBlockHash}`);
         const blocks = await this.fetchBlockRange(blockHash, latestBlockHash);
 
         for (const block of blocks) {
+            console.log(`fetching logs from block ${block.hash}`);
             const { newGravatarLogs, updateGravatarLogs } =
                 await this.fetchLogs(this.gravatarRegistry, block.hash);
 
             for (const log of newGravatarLogs) {
                 const entity = { ...log, ...log.args };
+                console.log(
+                    `creating gravatar ${entity.id.toString()} from block ${entity.blockNumber}`,
+                );
                 this.db.upsert(entity);
             }
 
             for (const log of updateGravatarLogs) {
                 const entity = { ...log, ...log.args };
+                console.log(
+                    `updating gravatar ${entity.id.toString()} from block ${entity.blockNumber}`,
+                );
                 this.db.upsert(entity);
             }
         }
 
         // update latest processed block
+        console.log(`updating latest block hash to ${blockHash}`);
         await this.db.updateLatestBlockHash(blockHash);
     }
 }

@@ -23,6 +23,7 @@ export class Application {
         const blocks = [];
         let blockHash = from;
         while (blockHash && blockHash !== to) {
+            console.log(`fetching block ${blockHash}`);
             const block = await this.client.getBlock({ blockHash });
             if (!block) {
                 break;

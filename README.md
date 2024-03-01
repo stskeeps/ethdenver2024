@@ -4,7 +4,7 @@ VeriFido is an ETHDenver 2024 hackathon project that produces **verifiable Ether
 
 Its end game is to allow something like TheGraph to execute in a deterministic, decentralized, and verifiable environment. This way, its resulting indexing data can be disputable on-chain!
 
-To make that possible, this project leverages the Cartesi Machine and Optimism's Pre-image Oracle.
+To make that possible, this project leverages the [Cartesi Machine](https://docs.cartesi.io/cartesi-machine/) and [Optimism's Pre-image Oracle](https://blog.oplabs.co/composable-pre-image-oracle/).
 
 ## Why verifiable indexing?
 
@@ -12,13 +12,25 @@ At the time of writing, this is the basic workflow of most Ethereum-based applic
 
 ![indexing architecture](./architecture-indexing.png)
 
-As displayed above, the status quo for indexing services is that they are either centralized or decentralized but unverifiable. This means that, although reasonably secure, indexing services still need to rely on human intervention for arbitrating any misbehavior.
+As displayed above, the status quo for indexer services is that they are either centralized or decentralized but unverifiable. This means that, although reasonably secure, these services still need to rely on human intervention for arbitrating any misbehavior.
 
-While this does not represent a direct risk to user assets, it does leave a door open for tricking users into taking bad decisions based on false information that is shown to them.
+While this does not represent a direct risk to user assets, it does leave a door open for tricking users into taking bad decisions by showing them false information.
 
 ## VeriFido architecture
 
-TODO
+In VeriFido, the indexer service is made verifiable and disputable by leveraging two important technologies.
+
+First, the [Cartesi Machine](https://docs.cartesi.io/cartesi-machine/) provides a deterministic and verifiable execution environment, which can be used to run the general indexing processing.
+Moreover, since we can run a full Linux OS with the Cartesi Machine, VeriFido indexing jobs can be coded to leverage mainstream technologies such as Postgres or SQLite databases to store the indexed data.
+
+Besides the processing itself, the other critical part of the indexing workflow is to fetch data from the blockchain in a verifiable way. To make that possible, VeriFido uses [Optimism's Pre-image Oracle](https://blog.oplabs.co/composable-pre-image-oracle/) to fetch block data based on keccak256 hashes.
+As such, when Cartesi's upcoming [Dave](https://cartesi.io/blog/grokking-dave/) fraud-proof protocol is operational, the entire indexing procedure will become permissionlessly disputable on-chain.
+
+Finally, the structured indexed data is posted to IPFS to allow any client to query it. In VeriFido, this data is currently posted as an SQLite database, which can then be queried remotely by a front-end clients such as web apps.
+
+The diagram below illustrates VeriFido's full architecture:
+
+![verifido architecture](./architecture-verifido.png)
 
 ## Components
 

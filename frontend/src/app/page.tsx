@@ -15,8 +15,8 @@ import { Address } from "viem";
 import { Gravatar } from "../components/Gravatar";
 import { useGravatars } from "../hooks/Gravatar";
 
-const host = "https://lambada.tspre.org";
-const chainCID = "bafybeib4unfueenuujet3uqnuixgz5lnc74bjee6mavjtkov5mrlfxcsda";
+const host = process.env.NEXT_PUBLIC_CARTESI_NODE_HOST!;
+const chainCID = process.env.NEXT_PUBLIC_CARTESI_CHAIN_CID!;
 
 export default function HomePage() {
     const { data, error, loading } = useGravatars({ host, chainCID });

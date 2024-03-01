@@ -1,7 +1,7 @@
 import { Database } from "sql.js";
 import { Address, Hash, hexToBigInt, numberToHex } from "viem";
 
-import { schema } from "./schema";
+import { schema } from "./schema.js";
 
 export type Gravatar = {
     id: bigint;

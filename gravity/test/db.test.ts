@@ -2,7 +2,7 @@ import initSqlJs from "sql.js";
 import { zeroAddress } from "viem";
 import { describe, expect, test } from "vitest";
 
-import { GravatarDatabase } from "../src/db";
+import { GravatarDatabase } from "../src/db.js";
 
 describe("db", () => {
     test("empty", async () => {

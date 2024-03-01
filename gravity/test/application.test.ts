@@ -7,10 +7,10 @@ import {
 } from "viem";
 import { describe, expect, test } from "vitest";
 
-import { Application } from "../src/application";
-import { testClient } from "./client";
-import { GravatarDatabase } from "../src/db";
-import gravatarAbi from "../src/gravatarAbi";
+import { Application } from "../src/application.js";
+import { testClient } from "./client.js";
+import { GravatarDatabase } from "../src/db.js";
+import gravatarAbi from "../src/gravatarAbi.js";
 
 describe("application", () => {
     test("list empty", async () => {

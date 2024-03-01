@@ -10,9 +10,9 @@ import {
     isHash,
 } from "viem";
 
-import { Application } from "./application";
-import { GravatarDatabase } from "./db";
-import { loadDb, storeDb } from "./store";
+import { Application } from "./application.js";
+import { GravatarDatabase } from "./db.js";
+import { loadDb, storeDb } from "./store.js";
 
 // option parse as Address
 const addressParse = (value: string, _previous: Address): Address => {

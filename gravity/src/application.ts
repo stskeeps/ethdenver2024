@@ -1,7 +1,7 @@
 import { Address, Hash, PublicClient, parseEventLogs } from "viem";
 
-import { GravatarDatabase } from "./db";
-import gravatarAbi from "./gravatarAbi";
+import { GravatarDatabase } from "./db.js";
+import gravatarAbi from "./gravatarAbi.js";
 
 export class Application {
     private client: PublicClient;

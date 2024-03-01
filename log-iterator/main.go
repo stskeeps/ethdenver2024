@@ -132,7 +132,7 @@ func filterLogs(logs []*types.Log, fromBlock, toBlock *big.Int, addresses []comm
 		}
 		return true
 	}
-	var ret []*types.Log
+	var ret []*types.Log = make([]*types.Log, 0)
 	for _, log := range logs {
 		if check(log) {
 			ret = append(ret, log)
@@ -313,7 +313,7 @@ func getBlockByNumber(number *big.Int) (string, types.Header) {
 }
 
 func extractLogsFromBlock(hexBlockHash string) []*types.Log {
-	var ret []*types.Log
+	var ret []*types.Log = make([]*types.Log, 0)
 
 	header := getBlockByHash(hexBlockHash)
 	hint("l1-transactions 0x" + hexBlockHash)

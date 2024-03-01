@@ -244,7 +244,7 @@ func jsonRpcHandler(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "Error parsing JSON rawFilters", http.StatusBadRequest)
 			return
 		}
-		var logsReturned []*types.Log
+		var logsReturned []*types.Log = make([]types.Log, 0)
 		for _, rawFilter := range rawFilters {
 			var filter filters.FilterCriteria
 			err := filter.UnmarshalJSON(rawFilter)

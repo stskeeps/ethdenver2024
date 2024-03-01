@@ -2,13 +2,25 @@
 
 VeriFido is an ETHDenver 2024 hackathon project that produces **verifiable Ethereum indexing**.
 
-It's end game is to allow something like TheGraph to execute in a deterministic, decentralized, and verifiable environment. This way, its resulting indexing data can be disputable on-chain!
+Its end game is to allow something like TheGraph to execute in a deterministic, decentralized, and verifiable environment. This way, its resulting indexing data can be disputable on-chain!
 
 To make that possible, this project leverages the Cartesi Machine and Optimism's Pre-image Oracle.
 
-## Architecture
+## Why verifiable indexing?
+
+At the time of writing, this is the basic workflow of most Ethereum-based applications:
+
+![indexing architecture](./architecture-indexing.png)
+
+As displayed above, the status quo for indexing services is that they are either centralized or decentralized but unverifiable. This means that, although reasonably secure, indexing services still need to rely on human intervention for arbitrating any misbehavior.
+
+While this does not represent a direct risk to user assets, it does leave a door open for tricking users into taking bad decisions based on false information that is shown to them.
+
+## VeriFido architecture
 
 TODO
+
+## Components
 
 ## Running
 
@@ -17,13 +29,13 @@ Start the Cartesi Lambada devkit.
 - For amd64 systems, execute:
 
 ```shell
-docker run -e KECCAK256_SOURCE=http://web3.link:8000 -p 127.0.0.1:8081:8081 --privileged -it zippiehq/lambada-ethdenver-devkit-amd64:1.1
+docker run -e KECCAK256_SOURCE=http://web3.link:8000 -p 8081:8081 -p 3033:3033 --privileged -it zippiehq/lambada-ethdenver-devkit-amd64:1.1
 ```
 
 - For arm64 systems, execute:
 
 ```shell
-docker run -e KECCAK256_SOURCE=http://web3.link:8000 -p 127.0.0.1:8081:8081 --privileged -it zippiehq/lambada-ethdenver-devkit-arm64:1.1
+docker run -e KECCAK256_SOURCE=http://web3.link:8000 -p 8081:8081 -p 3033:3033 --privileged -it zippiehq/lambada-ethdenver-devkit-arm64:1.1
 ```
 
 Wait until it is up and running, after which it will print something like this:
@@ -68,7 +80,9 @@ You can now make your Lambada node:
 - read latest state CID: curl http://127.0.0.1:3033/latest/<cid>
 ```
 
-To ask the application to update the Gravatar index, submit any arbitrary data to it by calling the `submit` endpoint as described above.
+To ask the application to update the Gravatar index, first subscribe and then submit arbitrary data to it by calling the `submit` endpoint as described above.
+
+You may find application logs in `/tmp/cartesi-machine.logs`.
 
 ## Advanced: run dehashing server using Optimism's pre-image Oracle
 

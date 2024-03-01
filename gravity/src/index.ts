@@ -47,6 +47,11 @@ program
             : "0x08d08e320e2b25184173331FcCCa122E4129523f", // GravatarRegistry on sepolia
     )
     .option(
+        "--rollups-address [address]",
+        "Rollups server address",
+        process.env.ROLLUP_HTTP_SERVER_URL,
+    )
+    .option(
         "--genesis-block <hash>",
         "Genesis block hash",
         hashParse,
@@ -61,21 +66,32 @@ program
         "/state/gravatar.sqlite3",
     )
     .action(async (blockHash, options) => {
-        const { dbFilename, genesisBlock, gravatarAddress, ipfsUrl, rpcUrl } =
-            options;
+        const {
+            dbFilename,
+            genesisBlock,
+            gravatarAddress,
+            ipfsUrl,
+            rpcUrl,
+            rollupsAddress,
+        } = options;
+
+        // create Ethereum client
+        console.log(`connecting to provider at ${rpcUrl}`);
+        const client = createPublicClient({ transport: http(rpcUrl) });
 
         // create IPFS client
         const ipfsClient = create({ url: ipfsUrl });
+
+        // get tx
+        if (rollupsAddress) {
+            await fetch(`${rollupsAddress}/get_tx`);
+        }
 
         // load db from IPFS
         const db = await loadDb(ipfsClient, dbFilename);
 
         // create gravatar db
         const gravatarDb = new GravatarDatabase(db);
-
-        // create Ethereum client
-        console.log(`connecting to provider at ${rpcUrl}`);
-        const client = createPublicClient({ transport: http(rpcUrl) });
 
         // update index
         const app = new Application(

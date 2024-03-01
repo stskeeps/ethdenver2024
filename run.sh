@@ -10,8 +10,6 @@ while [ ! -f /tmp/main.pid ]; do
 done
 sleep 1
 
-curl -sSL http://127.0.0.1:5004/get_tx > /dev/null
-
 echo STARTING APP
 
 cd /opt/cartesi/dapp

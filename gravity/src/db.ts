@@ -15,11 +15,11 @@ export type Gravatar = {
 export class GravatarDatabase {
     private db: Database;
 
-    constructor(db: Database, startBlock: Hash) {
+    constructor(db: Database) {
         this.db = db;
 
         // create table if not exists
-        db.run(schema(startBlock));
+        db.run(schema());
     }
 
     async upsert(gravatar: Gravatar) {
@@ -57,11 +57,11 @@ export class GravatarDatabase {
             : result;
     }
 
-    async getLatestBlockHash() {
+    async getLatestBlockHash(defaultValue: Hash) {
         const result = this.db
             .prepare(`SELECT blockHash FROM LatestBlock`)
             .getAsObject({});
-        return result.blockHash as Hash;
+        return (result.blockHash as Hash) || defaultValue;
     }
 
     async updateLatestBlockHash(blockHash: Hash) {

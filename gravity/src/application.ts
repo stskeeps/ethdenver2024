@@ -7,15 +7,18 @@ export class Application {
     private client: PublicClient;
     public readonly db: GravatarDatabase;
     private gravatarRegistry: Address;
+    private genesisBlockHash: Hash;
 
     constructor(
         db: GravatarDatabase,
         client: PublicClient,
         gravatarRegistry: Address,
+        genesisBlockHash: Hash,
     ) {
         this.client = client;
         this.db = db;
         this.gravatarRegistry = gravatarRegistry;
+        this.genesisBlockHash = genesisBlockHash;
     }
 
     private async fetchBlockRange(from: Hash, to: Hash) {
@@ -69,17 +72,23 @@ export class Application {
     }
 
     public async updateDb(blockHash?: Hash) {
-        console.log(`updating database based on block hash ${blockHash}`);
+        if (blockHash) {
+            console.log(`updating database based on block hash ${blockHash}`);
+        }
 
         // get block the database "is at"
-        const dbBlockHash = await this.db.getLatestBlockHash();
+        const dbBlockHash = await this.db.getLatestBlockHash(
+            this.genesisBlockHash,
+        );
         console.log(`latest block hash in database is ${dbBlockHash}`);
 
         // get chain latest blockHash (or use provided blockHash)
         const latestBlockHash = blockHash || (await this.getLatestBlockHash());
 
         // fetch all blocks from latest to where we are up to date
-        console.log(`fetching blocks from ${blockHash} back to ${dbBlockHash}`);
+        console.log(
+            `fetching blocks from ${latestBlockHash} back to ${dbBlockHash}`,
+        );
         const blocks = await this.fetchBlockRange(latestBlockHash, dbBlockHash);
 
         for (const block of blocks) {

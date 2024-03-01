@@ -71,14 +71,19 @@ program
         const db = await loadDb(ipfsClient, dbFilename);
 
         // create gravatar db
-        const gravatarDb = new GravatarDatabase(db, genesisBlock);
+        const gravatarDb = new GravatarDatabase(db);
 
         // create Ethereum client
         console.log(`connecting to provider at ${rpcUrl}`);
         const client = createPublicClient({ transport: http(rpcUrl) });
 
         // update index
-        const app = new Application(gravatarDb, client, gravatarAddress);
+        const app = new Application(
+            gravatarDb,
+            client,
+            gravatarAddress,
+            genesisBlock,
+        );
         await app.updateDb(blockHash);
 
         // store db back to IPFS

@@ -1,7 +1,5 @@
 // database schema
-export const schema = (
-    startBlock: string,
-) => `CREATE TABLE IF NOT EXISTS Gravatar (
+export const schema = () => `CREATE TABLE IF NOT EXISTS Gravatar (
         id TEXT PRIMARY KEY,
         owner TEXT,
         displayName TEXT,
@@ -10,5 +8,5 @@ export const schema = (
         blockNumber TEXT
     );
     CREATE TABLE IF NOT EXISTS LatestBlock (blockHash TEXT);
-    INSERT INTO LatestBlock (blockHash) VALUES ('${startBlock}');
+    INSERT INTO LatestBlock (blockHash) VALUES ('');
 `;

@@ -17,8 +17,7 @@ COPY gravity/tsconfig.json .
 COPY gravity/yarn.lock .
 COPY gravity/src ./src
 RUN yarn
-# TODO RUN yarn build
-
+RUN yarn build
 
 FROM --platform=linux/riscv64 ghcr.io/stskeeps/node:20-jammy-slim-estargz
 RUN apt-get update && apt-get install --no-install-recommends -y curl

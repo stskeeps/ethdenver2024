@@ -15,7 +15,7 @@ curl -sSL http://127.0.0.1:5004/get_tx > /dev/null
 echo STARTING APP
 
 cd /opt/cartesi/dapp
-yarn start
+node dist/index.js
 
 if [ $? != 0 ]; then
   echo EXIT APP AS EXCEPTION

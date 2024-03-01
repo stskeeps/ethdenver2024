@@ -36,7 +36,7 @@ export const useGravatars = (config: LambadaConfig) => {
     // query DB
     const { result } = useQuery(
         db,
-        "SELECT id, owner, displayName, imageUrl FROM gravatars"
+        "SELECT id, owner, displayName, imageUrl FROM Gravatar"
     );
 
     const data: Gravatar[] =

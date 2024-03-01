@@ -18,9 +18,14 @@ describe("application", () => {
 
         const SQL = await initSqlJs();
         const db = new SQL.Database();
-        const gravatarDb = new GravatarDatabase(db, gravatarAddress);
+        const gravatarDb = new GravatarDatabase(db);
         const client = testClient({ blocks: [], logs: [] });
-        const dapp = new Application(gravatarDb, client, zeroHash);
+        const dapp = new Application(
+            gravatarDb,
+            client,
+            gravatarAddress,
+            zeroHash,
+        );
         expect(await dapp.db.count()).toEqual(0);
     });
 
@@ -32,7 +37,7 @@ describe("application", () => {
 
         const SQL = await initSqlJs();
         const db = new SQL.Database();
-        const gravatarDb = new GravatarDatabase(db, zeroHash);
+        const gravatarDb = new GravatarDatabase(db);
 
         const client = testClient({
             blocks: [{ hash: latestBlockHash, number: latestBlockNumber }],
@@ -66,6 +71,7 @@ describe("application", () => {
             gravatarDb,
             client,
             gravatarAddress,
+            zeroHash,
         );
         await application.updateDb();
 
@@ -80,7 +86,7 @@ describe("application", () => {
 
         const SQL = await initSqlJs();
         const db = new SQL.Database();
-        const gravatarDb = new GravatarDatabase(db, zeroHash);
+        const gravatarDb = new GravatarDatabase(db);
 
         const client = testClient({
             blocks: [{ hash: latestBlockHash }],
@@ -136,6 +142,7 @@ describe("application", () => {
             gravatarDb,
             client,
             gravatarAddress,
+            zeroHash,
         );
         await application.updateDb(latestBlockHash);
 

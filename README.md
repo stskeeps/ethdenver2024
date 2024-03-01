@@ -1,5 +1,7 @@
 # ETHDenver 2024 - VeriFido
 
+<img src="./frontend/public/img/fido.webp" width="100">
+
 VeriFido is an ETHDenver 2024 hackathon project that produces **verifiable Ethereum indexing**.
 
 Its end game is to allow something like TheGraph to execute in a deterministic, decentralized, and verifiable environment. This way, its resulting indexing data can be disputable on-chain!

@@ -34,7 +34,35 @@ The diagram below illustrates VeriFido's full architecture:
 
 ## Components
 
-## Running
+### [dehashing-server](./dehashing-server/)
+
+A server that connects to a slightly modified Optimism node instance (linked to this project as a [submodule](./optimism/)) in order to use its Pre-image Oracle to fetch block data given keccak256 hashes.
+
+### [frontend](./frontend/)
+
+A frontend that uses indexed data from the [gravity](./gravity/) example indexing job.
+
+### [gravity](./gravity/)
+
+An example indexer, which processes events emitted by a [Gravatar](./gravity-contracts/) contract that stores user gravatar profiles.
+
+### [gravity-contracts](./gravity-contracts/)
+
+A smart contract allowing users to store and update their gravatar profile.
+It was extracted from a [subgraph example from TheGraph](https://github.com/graphprotocol/example-subgraph).
+
+### [log-iterator](./log-iterator/)
+
+A JSON-RPC server that runs inside the Cartesi Machine and connects to the machine's I/O device to query block data via keccak256 hashes.
+This server can be used by the application code (in this case, the [gravity](./gravity/) indexer) to fetch blockchain data.
+
+In practice, the supervisor code running the machine will route these requests to an instance of the [dehashing-server](./dehashing-server/). In other words, the node running the Cartesi Machine also needs to run a [dehashing-server](./dehashing-server/) in order to handle block data requests.
+
+### [log-iterator-js](./log-iterator-js/)
+
+A partially implemented experimentation of [log-iterator](./log-iterator/) functionality written in Typescript/Javascript instead of Go.
+
+## Running the indexer
 
 Start the Cartesi Lambada devkit.
 
@@ -49,6 +77,8 @@ docker run -e KECCAK256_SOURCE=http://web3.link:8000 -p 8081:8081 -p 3033:3033 -
 ```shell
 docker run -e KECCAK256_SOURCE=http://web3.link:8000 -p 8081:8081 -p 3033:3033 --privileged -it zippiehq/lambada-ethdenver-devkit-arm64:1.1
 ```
+
+**Note**: this uses a remotely deployed instance of the [dehashing-server](./dehashing-server/). You may also follow [these instructions](#advanced-directly-running-and-querying-the-dehashing-server) to build and run the server locally. In that case, change `KECCAK256_SOURCE` to point to http://localhost:8000.
 
 Wait until it is up and running, after which it will print something like this:
 
@@ -96,7 +126,7 @@ To ask the application to update the Gravatar index, first subscribe and then su
 
 You may find application logs in `/tmp/cartesi-machine.logs`.
 
-## Advanced: run dehashing server using Optimism's pre-image Oracle
+## Directly running and querying the dehashing server
 
 ### Cloning submodules
 

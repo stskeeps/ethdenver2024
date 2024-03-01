@@ -10,20 +10,14 @@ import {
     Stack,
     Title,
 } from "@mantine/core";
-import { CID } from "multiformats/cid";
-import { useMemo } from "react";
 import { Address } from "viem";
 
 import { Gravatar } from "../components/Gravatar";
 import { useGravatars } from "../hooks/Gravatar";
 
 export default function HomePage() {
-    const cid = useMemo(
-        () => CID.parse("QmfVNAkBznZ9iK6e4PTLjGHYyARAZ8uLEGz5HVim8ywkDW"),
-        []
-    );
-    const filename = "/gravatar.sqlite3";
-    const { data, error, loading } = useGravatars(cid, filename);
+    const lambadaUrl = "https://<lambada_url>/latest/<chain_id>/state_cid";
+    const { data, error, loading } = useGravatars(lambadaUrl);
 
     const gravatars = data.map((gravatar) => {
         const { id, owner, displayName, imageUrl } = gravatar;

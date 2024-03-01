@@ -1,25 +1,34 @@
 "use client";
-import { CID } from "multiformats/cid";
 import useSWR from "swr";
 
 import { useFile } from "./Helia";
-import { Gravatar } from "../types";
+import { useStateCID } from "./Lambada";
 import { useDatabase, useQuery } from "./SQLite";
+import { Gravatar } from "../types";
 
-export const useGravatars = (cid: CID, path?: string) => {
-    // fetch db from IPFS (XXX: not working yet)
+export const useGravatars = (lambadaUrl: string) => {
+    const {
+        cid,
+        error: lambadaError,
+        isLoading: lambadaLoading,
+    } = useStateCID(lambadaUrl);
+    const path = "/gravatar.sqlite3";
+
+    // fetch db from IPFS
     const {
         data: ipfsFile,
         error: ipfsError,
         loading: ipfsLoading,
     } = useFile(cid, path);
 
-    // fetch db file (XXX: replace by IPFS cat)
+    // fetch db file
+    /*
     const { data: urlFile } = useSWR("/gravatar.sqlite3", (url) =>
         fetch(url)
             .then((res) => res.arrayBuffer())
             .then(Buffer.from)
     );
+    */
 
     // load SQLite db
     const { db, error: dbError, loading: dbLoading } = useDatabase(ipfsFile);
@@ -42,7 +51,7 @@ export const useGravatars = (cid: CID, path?: string) => {
 
     return {
         data,
-        error: ipfsError || dbError,
-        loading: ipfsLoading || dbLoading,
+        error: lambadaError || ipfsError || dbError,
+        loading: lambadaLoading || ipfsLoading || dbLoading,
     };
 };

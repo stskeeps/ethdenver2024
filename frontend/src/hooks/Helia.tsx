@@ -11,7 +11,7 @@ export const useHelia = () => {
     return useContext(HeliaContext);
 };
 
-export const useFile = (cid: CID, path?: string) => {
+export const useFile = (cid?: CID, path?: string) => {
     const { fs, starting } = useHelia();
     const [data, setData] = useState<Buffer | undefined>();
     const [loading, setLoading] = useState(false);
@@ -30,7 +30,7 @@ export const useFile = (cid: CID, path?: string) => {
             return buffer;
         };
 
-        if (fs) {
+        if (cid && fs) {
             setLoading(true);
             read(fs, cid, path)
                 .then(setData)

@@ -12,10 +12,18 @@ TODO
 
 ## Running
 
-Start the Cartesi Lambada devkit:
+Start the Cartesi Lambada devkit.
+
+- For amd64 systems, execute:
 
 ```shell
 docker run -e KECCAK256_SOURCE=http://web3.link:8000 -p 127.0.0.1:8081:8081 --privileged -it zippiehq/lambada-ethdenver-devkit-amd64:1.1
+```
+
+- For arm64 systems, execute:
+
+```shell
+docker run -e KECCAK256_SOURCE=http://web3.link:8000 -p 127.0.0.1:8081:8081 --privileged -it zippiehq/lambada-ethdenver-devkit-arm64:1.1
 ```
 
 Wait until it is up and running, after which it will print something like this:

@@ -15,13 +15,14 @@ export const useGravatars = (config: LambadaConfig) => {
 
     // XXX: hard-coded CID for now
     cid = "QmdVaVZK7panA9QQcVUPj9fzdt4jmeNyBy4WZHBZC2xhXP";
+    const path = "/gravatar.sqlite3";
 
     // fetch db from IPFS
     const {
         data: ipfsFile,
         error: ipfsError,
         loading: ipfsLoading,
-    } = useFile(cid, "/gravatar.sqlite3");
+    } = useFile(cid, path);
 
     // fetch db file
     /*
@@ -52,8 +53,10 @@ export const useGravatars = (config: LambadaConfig) => {
             : [];
 
     return {
+        cid,
         data,
         error: lambadaError || ipfsError || dbError,
         loading: lambadaLoading || ipfsLoading || dbLoading,
+        path,
     };
 };

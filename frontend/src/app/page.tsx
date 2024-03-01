@@ -13,13 +13,17 @@ import {
 import { Address } from "viem";
 
 import { Gravatar } from "../components/Gravatar";
+import { Project } from "../components/Project";
 import { useGravatars } from "../hooks/Gravatar";
 
 const host = process.env.NEXT_PUBLIC_CARTESI_NODE_HOST!;
 const chainCID = process.env.NEXT_PUBLIC_CARTESI_CHAIN_CID!;
 
 export default function HomePage() {
-    const { data, error, loading } = useGravatars({ host, chainCID });
+    const { cid, data, error, loading, path } = useGravatars({
+        host,
+        chainCID,
+    });
 
     const gravatars = data.map((gravatar) => {
         const { id, owner, displayName, imageUrl } = gravatar;
@@ -34,7 +38,12 @@ export default function HomePage() {
         );
     });
     return (
-        <Stack gap={20}>
+        <Stack gap={30} p={30}>
+            <Project
+                contractAddress="0x08d08e320e2b25184173331FcCCa122E4129523f"
+                databaseCID={cid}
+                databasePath={path}
+            />
             {error && (
                 <Alert title="Error" variant="light" color="red">
                     {error.message}

@@ -7,19 +7,21 @@ import { useDatabase, useQuery } from "./SQLite";
 import { Gravatar } from "../types";
 
 export const useGravatars = (config: LambadaConfig) => {
-    const {
+    let {
         cid,
         error: lambadaError,
         isLoading: lambadaLoading,
     } = useStateCID(config);
-    const path = "/gravatar.sqlite3";
+
+    // XXX: hard-coded CID for now
+    cid = "QmdVaVZK7panA9QQcVUPj9fzdt4jmeNyBy4WZHBZC2xhXP";
 
     // fetch db from IPFS
     const {
         data: ipfsFile,
         error: ipfsError,
         loading: ipfsLoading,
-    } = useFile(cid, path);
+    } = useFile(cid, "/gravatar.sqlite3");
 
     // fetch db file
     /*

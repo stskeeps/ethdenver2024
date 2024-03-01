@@ -21,7 +21,7 @@ RUN yarn
 
 
 FROM --platform=linux/riscv64 ghcr.io/stskeeps/node:20-jammy-slim-estargz
-RUN apt-get update && apt-get install --no-install-recommends -y curl jq
+RUN apt-get update && apt-get install --no-install-recommends -y curl
 COPY --from=build-jsonrpc /opt/cartesi/jsonrpc/main /opt/cartesi/jsonrpc/main
 COPY --from=build-dapp /opt/cartesi/dapp /opt/cartesi/dapp
 COPY ./run.sh /run.sh

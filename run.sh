@@ -10,8 +10,7 @@ while [ ! -f /tmp/main.pid ]; do
 done
 sleep 1
 
-PAYLOAD=$(curl -sSL http://127.0.0.1:5004/get_tx)
-BLOCK_HASH=$(echo $PAYLOAD | jq -r ".header.l1_finalized.hash")
+curl -sSL http://127.0.0.1:5004/get_tx
 
 cd /opt/cartesi/dapp
-yarn start $BLOCK_HASH
+yarn start

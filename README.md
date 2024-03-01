@@ -1,6 +1,62 @@
 # ETHDenver 2024
 
-## Getting Started
+## Architecture
+
+TODO
+
+## Running
+
+Start the Cartesi Lambada devkit:
+
+```shell
+docker run -e KECCAK256_SOURCE=http://web3.link:8000 -p 127.0.0.1:8081:8081 --privileged -it zippiehq/lambada-ethdenver-devkit-amd64:1.1
+```
+
+Wait until it is up and running, after which it will print something like this:
+
+```
+===============================================================================
+Now you can access the Cartesi development environment on http://localhost:8081
+
+or
+
+docker exec -it <container-id> /bin/bash
+===============================================================================
+```
+
+Follow one of the two options to open a terminal within the devkit environment.
+
+```shell
+docker exec -it <container-id> /bin/bash
+```
+
+Once inside, clone this repo and `cd` into it:
+
+```shell
+git clone https://github.com/stskeeps/ethdenver2024
+cd ethdenver2024
+```
+
+Then, build the application and start it up:
+
+```shell
+cartesi-build
+```
+
+This will take some time, after which it will print the following info:
+
+```
+Done! Chain CID is <cid>
+
+You can now make your Lambada node:
+- subscribe to your chain with: curl http://127.0.0.1:3033/subscribe/<cid>
+- send a transaction to your chain: curl -X POST -d 'transaction data' -H "Content-type: application/octet-stream" http://127.0.0.1:3033/submit/<cid>
+- read latest state CID: curl http://127.0.0.1:3033/latest/<cid>
+```
+
+To ask the application to update the Gravatar index, submit any arbitrary data to it by calling the `submit` endpoint as described above.
+
+## Advanced: run dehashing server using Optimism's pre-image Oracle
 
 ### Cloning submodules
 

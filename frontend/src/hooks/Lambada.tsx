@@ -1,5 +1,9 @@
-import { CID } from "multiformats/cid";
 import useSWR from "swr";
+
+export type LambadaConfig = {
+    host: string;
+    chainCID: string;
+};
 
 type LambadaResponse = {
     error?: string;
@@ -7,24 +11,31 @@ type LambadaResponse = {
     state_cid?: string;
 };
 
-export const useStateCID = (lambadaUrl: string) => {
+export const useStateCID = (lambadaConfig: LambadaConfig) => {
     // request latest from lambada node
-    const response = useSWR<LambadaResponse>(lambadaUrl);
+    const { host, chainCID } = lambadaConfig;
+    const url = `${host}/latest/${chainCID}`;
+    const response = useSWR<LambadaResponse>(url, (url: string) =>
+        fetch(url).then((res) => res.json())
+    );
     const { data } = response;
 
-    // error is request error, or error that comes in the body of the response
-    let error = response.error || data?.error;
+    // error is request error
+    let error = response.error;
+
+    if (data?.error) {
+        // use error from response body if there is one
+        error = new Error(data.error);
+    }
 
     let cid = undefined;
     if (data?.state_cid) {
-        try {
-            // try to parse as CID...
-            cid = CID.parse(data.state_cid);
-        } catch (e) {
-            // if fails set as error
-            error = error || `Invalid CID: ${data.state_cid}`;
-        }
+        cid = data.state_cid;
     }
 
-    return { ...response, error, cid };
+    return {
+        ...response,
+        error,
+        cid,
+    };
 };

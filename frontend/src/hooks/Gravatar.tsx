@@ -2,16 +2,16 @@
 import useSWR from "swr";
 
 import { useFile } from "./Helia";
-import { useStateCID } from "./Lambada";
+import { LambadaConfig, useStateCID } from "./Lambada";
 import { useDatabase, useQuery } from "./SQLite";
 import { Gravatar } from "../types";
 
-export const useGravatars = (lambadaUrl: string) => {
+export const useGravatars = (config: LambadaConfig) => {
     const {
         cid,
         error: lambadaError,
         isLoading: lambadaLoading,
-    } = useStateCID(lambadaUrl);
+    } = useStateCID(config);
     const path = "/gravatar.sqlite3";
 
     // fetch db from IPFS

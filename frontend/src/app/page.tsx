@@ -15,9 +15,11 @@ import { Address } from "viem";
 import { Gravatar } from "../components/Gravatar";
 import { useGravatars } from "../hooks/Gravatar";
 
+const host = "https://lambada.tspre.org";
+const chainCID = "bafybeib4unfueenuujet3uqnuixgz5lnc74bjee6mavjtkov5mrlfxcsda";
+
 export default function HomePage() {
-    const lambadaUrl = "https://<lambada_url>/latest/<chain_id>/state_cid";
-    const { data, error, loading } = useGravatars(lambadaUrl);
+    const { data, error, loading } = useGravatars({ host, chainCID });
 
     const gravatars = data.map((gravatar) => {
         const { id, owner, displayName, imageUrl } = gravatar;

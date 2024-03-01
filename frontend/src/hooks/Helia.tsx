@@ -11,7 +11,7 @@ export const useHelia = () => {
     return useContext(HeliaContext);
 };
 
-export const useFile = (cid?: CID, path?: string) => {
+export const useFile = (cid?: string, path?: string) => {
     const { fs, starting } = useHelia();
     const [data, setData] = useState<Buffer | undefined>();
     const [loading, setLoading] = useState(false);
@@ -21,18 +21,24 @@ export const useFile = (cid?: CID, path?: string) => {
         const read = async (fs: UnixFS, cid: CID, path?: string) => {
             const chunks = [];
             console.log(`Loading CID ${cid}${path ?? ""}`);
-            for await (const chunk of fs.cat(cid, { path })) {
-                console.log(`chunk: ${chunk.length}`);
-                chunks.push(chunk);
+            try {
+                for await (const chunk of fs.cat(cid, { path })) {
+                    console.log(`chunk: ${chunk.length}`);
+                    chunks.push(chunk);
+                }
+                const buffer = Buffer.concat(chunks);
+                console.log(`Loaded ${buffer.length} bytes`);
+                return buffer;
+            } catch (error) {
+                throw new Error(
+                    `Failed to load CID ${cid}${path ?? ""}: ${error}`
+                );
             }
-            const buffer = Buffer.concat(chunks);
-            console.log(`Loaded ${buffer.length} bytes`);
-            return buffer;
         };
 
         if (cid && fs) {
             setLoading(true);
-            read(fs, cid, path)
+            read(fs, CID.parse(cid), path)
                 .then(setData)
                 .then(() => setLoading(false))
                 .catch((error) => {

@@ -14,7 +14,7 @@ export const useGravatars = (config: LambadaConfig) => {
     } = useStateCID(config);
 
     // XXX: hard-coded CID for now
-    cid = "QmdVaVZK7panA9QQcVUPj9fzdt4jmeNyBy4WZHBZC2xhXP";
+    // cid = "QmdVaVZK7panA9QQcVUPj9fzdt4jmeNyBy4WZHBZC2xhXP";
     const path = "/gravatar.sqlite3";
 
     // fetch db from IPFS

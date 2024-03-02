@@ -5,7 +5,7 @@ import { FC } from "react";
 
 type ProjectProps = {
     contractAddress: string;
-    databaseCID: string;
+    databaseCID?: string;
     databasePath: string;
 };
 
@@ -40,12 +40,19 @@ export const Project: FC<ProjectProps> = ({
                     </Group>
                     <Group>
                         <Text>Database location: </Text>
-                        <Link href={`https://ipfs.io/ipfs/${databaseCID}`}>
+                        {databaseCID ? (
+                            <Link href={`https://ipfs.io/ipfs/${databaseCID}`}>
+                                <Text>
+                                    {databaseCID ?? "<unknown>"}
+                                    {databasePath}
+                                </Text>
+                            </Link>
+                        ) : (
                             <Text>
-                                {databaseCID}
+                                {databaseCID ?? "<unknown>"}
                                 {databasePath}
                             </Text>
-                        </Link>
+                        )}
                     </Group>
                 </Stack>
                 <Stack>

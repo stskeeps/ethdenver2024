@@ -64,6 +64,10 @@ In practice, the supervisor code running the machine will route these requests t
 
 A partially implemented experimentation of [log-iterator](./log-iterator/) functionality written in Typescript/Javascript instead of Go.
 
+## Demo
+
+[![VeriFido demo](https://img.youtube.com/vi/aWEkcefeOzA/0.jpg)](https://www.youtube.com/watch?v=aWEkcefeOzA)
+
 ## Running the indexer
 
 Start the Cartesi Lambada devkit.

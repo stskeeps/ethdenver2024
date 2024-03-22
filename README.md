@@ -152,10 +152,11 @@ docker build -t opstack:cartesi -f ./optimism/ops/docker/op-stack-go/Dockerfile 
 
 ```shell
 docker build ./dehashing-server -t dehashing-server
-docker run -p 8000:8000 -e ALCHEMY_RPC_URL=<alchemy-rpc-url> dehashing-server
+docker run -p 8000:8000 -e ALCHEMY_RPC_URL=<alchemy-rpc-url> -e HEAD_BLOCK_HASH=<head-block-hash> dehashing-server
 ```
 
 Replace `<alchemy-rpc-url>` with a Sepolia Alchemy RPC URL.
+Replace `<head-block-hash>` wtih L1 head block hash.
 
 ### Query block hash
 
